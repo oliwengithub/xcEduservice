@@ -1,2 +1,12 @@
-#.idea
-.idea
+# Compiled class file
+*.class
+#ideal
+.idea/
+*.iml
+
+#log
+logs/
+log/
+*.log
+
+target/
