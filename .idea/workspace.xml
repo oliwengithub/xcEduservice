@@ -215,9 +215,9 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="255" />
-    <option name="y" value="181" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-141" />
+    <option name="y" value="-20" />
     <option name="width" value="1772" />
     <option name="height" value="770" />
   </component>
@@ -416,6 +416,7 @@
     <property name="RequestMappingsPanelWidth0" value="75" />
     <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="RequestMappingsPanelWidth2" value="75" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1537000270429" />
