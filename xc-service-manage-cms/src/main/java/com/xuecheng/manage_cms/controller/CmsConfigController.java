@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CmsConfigController implements CmsConfigControllerApi {
     @Autowired
     CmsConfigService cmsConfigService;
+
     @Override
     @GetMapping("/getmodel/{id}")
     public CmsConfig getModel(@PathVariable("id") String id) {
