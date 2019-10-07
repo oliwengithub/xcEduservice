@@ -7,7 +7,7 @@ spring:
   data:
     mongodb:
       database: xc_fs
-      uri: mongodb://root:123@127.0.0.1:27017
+      uri: mongodb://root:123456@127.0.0.1:27017
 #SpringMVC上传文件配置
   servlet:
     multipart:
@@ -26,4 +26,4 @@ xuecheng:
     connect_timeout_in_seconds: 5
     network_timeout_in_seconds: 30
     charset: UTF-8
-    tracker_servers: 192.168.101.65:22122 #多个 trackerServer中间以逗号分隔
+    tracker_servers: 192.168.241.130:22122 #多个 trackerServer中间以逗号分隔

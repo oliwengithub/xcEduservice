@@ -10,6 +10,7 @@ import lombok.ToString;
  */
 @ToString
 public enum FileSystemCode implements ResultCode {
+    FS_INITFDFSERROR(false,25000, "文件服务器初始化失败"),
     FS_UPLOADFILE_FILEISNULL(false,25001,"上传文件为空！"),
     FS_UPLOADFILE_BUSINESSISNULL(false,25002,"业务Id为空！"),
     FS_UPLOADFILE_SERVERFAIL(false,25003,"上传文件服务器失败！"),

@@ -5,6 +5,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -37,5 +38,7 @@ public class FileSystem {
     private String filetag;
     //文件元信息
     private Map metadata;
+    //文件上传时间
+    private Date createTime;
 
 }

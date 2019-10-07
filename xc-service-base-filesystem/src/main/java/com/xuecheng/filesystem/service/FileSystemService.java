@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -56,6 +57,7 @@ public class FileSystemService {
         fileSystem.setBusinesskey(businesskey);
         fileSystem.setFileName(multipartFile.getOriginalFilename());
         fileSystem.setFileType(multipartFile.getContentType());
+        fileSystem.setCreateTime(new Date());
         if(StringUtils.isNotEmpty(metadata)){
             try {
                 Map map = JSON.parseObject(metadata, Map.class);
