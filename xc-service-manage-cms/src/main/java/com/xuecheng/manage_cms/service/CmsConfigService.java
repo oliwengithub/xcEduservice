@@ -13,10 +13,10 @@ public class CmsConfigService {
     @Autowired
     CmsConfigRepository cmsConfigRepository;
 
-    public CmsConfig getConfigById(String id){
+    public CmsConfig getConfigById (String id) {
 
         Optional<CmsConfig> optional = cmsConfigRepository.findById(id);
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
             CmsConfig cmsConfig = optional.get();
             return cmsConfig;
         }
