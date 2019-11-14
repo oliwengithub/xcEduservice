@@ -2,6 +2,8 @@ package com.xuecheng.api.filesystem;
 
 import com.xuecheng.framework.domain.filesystem.response.UploadFileResult;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +19,13 @@ public interface FileSystemControllerApi {
      * @return
      */
     @ApiOperation("文件上传接口")
-    public UploadFileResult upload(MultipartFile multipartFile, String filetag, String businesskey, String metadata);
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="multipartFile", value = "上传的文件", required = true, paramType = "path",dataType = "File"),
+            @ApiImplicitParam(name="filetag", value = "业务标签", required = false, paramType = "path"),
+            @ApiImplicitParam(name="businesskey", value = "业务key", required = false, paramType = "path"),
+            @ApiImplicitParam(name="metadata", value = "文件元信息(JSON格式)", required = false, paramType = "path"),
+            @ApiImplicitParam(name="userId", value = "用户id，用于授权", required = false, paramType = "path"),
+    })
+    public UploadFileResult upload(MultipartFile multipartFile, String filetag, String businesskey, String metadata, String userId);
 
     }

@@ -65,7 +65,7 @@ public class TestFastDFS {
             StorageClient1 storageClient1 = new StorageClient1(trackerServer,storeStorage);
             //下载文件
             //文件id
-            String fileId = "group1/M00/00/00/wKjxgl1zkNSATwVuAAAebYYZcaU448.png";
+            String fileId = "group1/M00/00/00/wKjxgl3HfqCAHd3WAAAebYYZcaU720.png";
             byte[] bytes = storageClient1.download_file1(fileId);
             //使用输出流保存文件
             FileOutputStream fileOutputStream = new FileOutputStream(new File("f:/service.png"));
