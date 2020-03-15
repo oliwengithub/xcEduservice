@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * 监听MQ，接收页面发布消息
+ * 监听MQ，接收页面发布消息 消费方
  * @author Administrator
  * @version 1.0
  **/
@@ -22,7 +22,8 @@ public class ConsumerPostPage {
     @Autowired
     PageService pageService;
 
-    @RabbitListener(queues = {"${xuecheng.mq.queue}"})
+    //监听执行下载
+    @RabbitListener(queues = {"${xuecheng.mq.queue01}","${xuecheng.mq.queue02}"})
     public void postPage(String msg){
         //解析消息
         Map map = JSON.parseObject(msg, Map.class);

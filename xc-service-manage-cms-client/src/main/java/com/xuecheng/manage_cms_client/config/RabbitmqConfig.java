@@ -14,15 +14,22 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitmqConfig {
 
     //队列bean的名称
-    public static final String QUEUE_CMS_POSTPAGE = "queue_cms_postpage";
+    //门户站点
+    public static final String QUEUE_CMS_POSTPAGE01 = "queue_cms_postpage01";
+    //课程预览站点
+    public static final String QUEUE_CMS_POSTPAGE02 = "queue_cms_postpage02";
     //交换机的名称
     public static final String EX_ROUTING_CMS_POSTPAGE="ex_routing_cms_postpage";
     //队列的名称
-    @Value("${xuecheng.mq.queue}")
-    public  String queue_cms_postpage_name;
+    @Value("${xuecheng.mq.queue01}")
+    public  String queue_cms_postpage_name01;
+    @Value("${xuecheng.mq.queue02}")
+    public  String queue_cms_postpage_name02;
     //routingKey 即站点Id
-    @Value("${xuecheng.mq.routingKey}")
-    public  String routingKey;
+    @Value("${xuecheng.mq.routingKey01}")
+    public  String routingKey01;
+    @Value("${xuecheng.mq.routingKey02}")
+    public  String routingKey02;
     /**
      * 交换机配置使用direct类型
      * @return the exchange
@@ -32,9 +39,16 @@ public class RabbitmqConfig {
         return ExchangeBuilder.directExchange(EX_ROUTING_CMS_POSTPAGE).durable(true).build();
     }
     //声明队列
-    @Bean(QUEUE_CMS_POSTPAGE)
-    public Queue QUEUE_CMS_POSTPAGE() {
-        Queue queue = new Queue(queue_cms_postpage_name);
+    @Bean(QUEUE_CMS_POSTPAGE01)
+    public Queue QUEUE_CMS_POSTPAGE01() {
+        Queue queue = new Queue(queue_cms_postpage_name01);
+        return queue;
+    }
+
+    //声明队列
+    @Bean(QUEUE_CMS_POSTPAGE02)
+    public Queue QUEUE_CMS_POSTPAGE02() {
+        Queue queue = new Queue(queue_cms_postpage_name02);
         return queue;
     }
 
@@ -45,9 +59,14 @@ public class RabbitmqConfig {
      * @param exchange the exchange
      * @return the binding
      */
+
     @Bean
-    public Binding BINDING_QUEUE_INFORM_SMS(@Qualifier(QUEUE_CMS_POSTPAGE) Queue queue, @Qualifier(EX_ROUTING_CMS_POSTPAGE) Exchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(routingKey).noargs();
+    public Binding BINDING_QUEUE_INFORM_SMS01(@Qualifier(QUEUE_CMS_POSTPAGE01) Queue queue, @Qualifier(EX_ROUTING_CMS_POSTPAGE) Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(routingKey01).noargs();
     }
 
+    @Bean
+    public Binding BINDING_QUEUE_INFORM_SMS02(@Qualifier(QUEUE_CMS_POSTPAGE02) Queue queue, @Qualifier(EX_ROUTING_CMS_POSTPAGE) Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(routingKey02).noargs();
+    }
 }

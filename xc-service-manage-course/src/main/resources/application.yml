@@ -36,3 +36,12 @@ ribbon:
   OkToRetryOnAllOperations: false #对所有操作请求都进行重试，如果是get则可以，如果是post，put等操作没有实现幂等的情况下是很危险的,所以设置为false
   ConnectTimeout: 5000 #请求连接的超时时间
   ReadTimeout: 6000 #请求处理的超时时间
+
+#课程页面配置信息
+course‐publish:
+  siteId: 5cfe61c5619b3b11280bf0b3 #站点id
+  templateId: 5ad9a24d68db5239b8fef199 #模板id
+  previewUrl: http://www.xuecheng.com/cms/preview/ #预览url
+  pageWebPath: /course/detail/
+  pagePhysicalPath: /course/detail/
+  dataUrlPre: http://localhost:31200/course/courseview/

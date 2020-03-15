@@ -3,12 +3,15 @@ package com.xuecheng.api.cms;
 import com.xuecheng.framework.domain.cms.CmsPage;
 import com.xuecheng.framework.domain.cms.request.QueryPageRequest;
 import com.xuecheng.framework.domain.cms.response.CmsPageResult;
+import com.xuecheng.framework.domain.cms.response.CmsPostPageResult;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Api(value="cms页面管理接口",description = "cms页面管理接口，提供页面的增、删、改、查")
 public interface CmsPageControllerApi {
@@ -26,6 +29,7 @@ public interface CmsPageControllerApi {
     //根据页面id查询页面信息
     @ApiOperation("根据页面id查询页面信息")
     public CmsPage findById (String id);
+
     //修改页面
     @ApiOperation("修改页面")
     public CmsPageResult edit(String id, CmsPage cmsPage);
@@ -37,4 +41,12 @@ public interface CmsPageControllerApi {
     //页面发布
     @ApiOperation("页面发布")
     public ResponseResult post(String pageId);
+
+    //保存页面
+    @ApiOperation("保存页面")
+    public ResponseResult save(@RequestBody CmsPage cmsPage);
+
+    //一键发布页面
+    @ApiOperation("一键发布页面")
+    public CmsPostPageResult postPageQuick(@RequestBody CmsPage cmsPage);
 }

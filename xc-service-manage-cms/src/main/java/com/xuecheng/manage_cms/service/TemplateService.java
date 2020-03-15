@@ -97,6 +97,7 @@ public class TemplateService {
             //设置更新字段
             one.setTemplateName(cmsTemplate.getTemplateName());
             one.setTemplateParameter(cmsTemplate.getTemplateParameter());
+            one.setTemplateFileId(cmsTemplate.getTemplateFileId());
             cmsTemplateRepository.save(one);
             return new CmsTemplateResult(CommonCode.SUCCESS,one);
         }
