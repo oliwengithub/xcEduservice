@@ -7,7 +7,9 @@ import lombok.ToString;
 
 
 /**
- * Created by admin on 2018/3/5.
+ *
+ * @author olw
+ * @date 2018/3/5
  */
 @ToString
 public enum MediaCode implements ResultCode {
@@ -15,16 +17,27 @@ public enum MediaCode implements ResultCode {
     UPLOAD_FILE_REGISTER_EXIST(false,22002,"上传文件在系统已存在！"),
     CHUNK_FILE_EXIST_CHECK(true,22003,"分块文件在系统已存在！"),
     MERGE_FILE_FAIL(false,22004,"合并文件失败，文件在系统已存在！"),
-    MERGE_FILE_CHECKFAIL(false,22005,"合并文件校验失败！");
+    MERGE_FILE_CHECKFAIL(false,22005,"合并文件校验失败！"),
+    UPLOAD_FILE_REGISTER_CREATEFOLDER_FAIL(false,22006,"上传文件目录创建失败！"),
+    UPLOAD_FILE_REGISTER_ISNULL(false,22007,"上传文件内容为空！"),
+    CHUNK_FILE_UPLOAD_FAIL(false,22008,"上传文件失败！"),
+    MERGE_FILE_CREATEFAIL(false,22008,"合并文件夹创建失败！");
 
-    //操作代码
+    /**
+    * 操作代码
+     */
     @ApiModelProperty(value = "媒资系统操作是否成功", example = "true", required = true)
     boolean success;
 
-    //操作代码
+    /**
+     * 操作代码
+     */
     @ApiModelProperty(value = "媒资系统操作代码", example = "22001", required = true)
     int code;
-    //提示信息
+
+    /**
+     * 提示信息
+     */
     @ApiModelProperty(value = "媒资系统操作提示", example = "文件在系统已存在！", required = true)
     String message;
     private MediaCode(boolean success,int code, String message){

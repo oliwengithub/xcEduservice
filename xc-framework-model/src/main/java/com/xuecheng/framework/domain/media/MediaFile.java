@@ -1,6 +1,8 @@
 package com.xuecheng.framework.domain.media;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,6 +16,8 @@ import java.util.Date;
  * @Modified By:
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @Document(collection = "media_file")
 public class MediaFile {
