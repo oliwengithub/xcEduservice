@@ -7,8 +7,18 @@ spring:
     mongodb:
       uri:  mongodb://root:123456@localhost:27017
       database: xc_media
+  #rabbitmq配置
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
 xc-service-manage-media:
-  upload-location: F:/develop/video/
+  upload-location: F:/study/xcEdu/xcEduUI/video/
+  mq:
+    # 绑定的路由key
+    routingkey-media-video: routingkey_media_video
 eureka:
   client:
     registerWithEureka: true #服务注册开关
