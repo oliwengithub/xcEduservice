@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Table(name="teachplan_media")
 @GenericGenerator(name = "jpa-assigned", strategy = "assigned")
 public class TeachplanMedia implements Serializable {
-    private static final long serialVersionUID = -916357110051689485L;
+    private static final long serialVersionUID = -916357110051689486L;
     @Id
     @GeneratedValue(generator = "jpa-assigned")
     @Column(name="teachplan_id")
@@ -30,6 +30,7 @@ public class TeachplanMedia implements Serializable {
 
     @Column(name="media_url")
     private String mediaUrl;
+    @Column(name="course_id")
     private String courseId;
 
 }

@@ -2,6 +2,7 @@ package com.xuecheng.manage_course.dao;
 
 import com.github.pagehelper.PageHelper;
 import com.xuecheng.framework.domain.course.CourseBase;
+import com.xuecheng.framework.domain.course.TeachplanMedia;
 import com.xuecheng.framework.domain.course.ext.CourseInfo;
 import com.xuecheng.framework.domain.course.ext.TeachplanNode;
 import com.xuecheng.framework.domain.course.request.CourseListRequest;
@@ -30,6 +31,21 @@ public class TestDao {
     CourseMapper courseMapper;
     @Autowired
     TeachMapper teachMapper;
+
+    @Autowired
+    TeachplanMediaRepository teachplanMediaRepository;
+
+    @Test
+    public void teachplanMediaRepository(){
+        Optional<TeachplanMedia> teachplanNode = teachplanMediaRepository.findById("4028e581617f945f01617f9dabc40000");
+        TeachplanMedia teachplanMedia = null;
+        if (teachplanNode.isPresent()){
+             teachplanMedia = teachplanNode.get();
+
+        }
+        System.out.println(teachplanMedia);
+
+    }
 
     @Test
     public void testTeachMapper(){
