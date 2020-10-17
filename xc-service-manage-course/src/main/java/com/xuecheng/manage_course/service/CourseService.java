@@ -302,7 +302,7 @@ public class CourseService {
         }
         //营销
         Optional<CourseMarket> marketOptional = courseMarketRepository.findById(id);
-        if (baseOptional.isPresent()) {
+        if (marketOptional.isPresent()) {
             CourseMarket courseMarket = marketOptional.get();
             courseView.setCourseMarket(courseMarket);
         }
@@ -362,6 +362,8 @@ public class CourseService {
         CourseBase one = this.findCourseBaseById(id);
         //发布课程详情页面
         CmsPostPageResult cmsPostPageResult = publish_page(id);
+        //CmsPostPageResult cmsPostPageResult = new CmsPostPageResult(CommonCode.SUCCESS, "success");
+
         if (!cmsPostPageResult.isSuccess()) {
             ExceptionCast.cast(CommonCode.FAIL);
         }
