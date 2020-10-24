@@ -1,15 +1,20 @@
 package com.xuecheng.ucenter.service;
 
 import com.xuecheng.framework.domain.ucenter.XcCompanyUser;
+import com.xuecheng.framework.domain.ucenter.XcMenu;
 import com.xuecheng.framework.domain.ucenter.XcUser;
 import com.xuecheng.framework.domain.ucenter.ext.XcUserExt;
 import com.xuecheng.framework.domain.ucenter.response.UcenterCode;
 import com.xuecheng.framework.exception.ExceptionCast;
+import com.xuecheng.framework.model.response.QueryResult;
 import com.xuecheng.ucenter.dao.XcCompanyUserRepository;
+import com.xuecheng.ucenter.dao.XcMenuMapper;
 import com.xuecheng.ucenter.dao.XcUserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  *
@@ -27,6 +32,9 @@ public class UserService {
     @Autowired
     private XcUserRepository xcUserRepository;
 
+    @Autowired
+    private XcMenuMapper xcMenuMapper;
+
     /**
      * 获取用户信息
      * @author: olw
@@ -35,9 +43,7 @@ public class UserService {
      * @returns: com.xuecheng.framework.domain.ucenter.ext.XcUserExt
     */
     public XcUserExt getUserExt (String username) {
-
         // 获取用户信息
-
         XcUser xcUser = findXcUserByUsername(username);
         if (xcUser == null) {
             // 这里不做异常处理 直接返回null
@@ -54,6 +60,11 @@ public class UserService {
         XcCompanyUser xcCompanyUser = findByUserId(userId);
         if (xcCompanyUser != null) {
             xcUserExt.setCompanyId(xcCompanyUser.getCompanyId());
+        }
+        // 获取用户的权限
+        List<XcMenu> menuList = xcMenuMapper.findMenuByUserId(userId);
+        if (menuList != null && menuList.size() > 0) {
+            xcUserExt.setPermissions(menuList);
         }
         return xcUserExt;
 
@@ -79,5 +90,23 @@ public class UserService {
     */
     public XcCompanyUser findByUserId (String userId) {
         return xcCompanyUserRepository.findByUserId(userId);
+    }
+
+    public QueryResult<XcUser> findAll () {
+
+        return new QueryResult<>();
+    }
+
+    public boolean add (XcUser user) {
+        return true;
+    }
+
+
+    public boolean del (String userId) {
+        return true;
+    }
+
+    public boolean update (XcUser user) {
+        return true;
     }
 }

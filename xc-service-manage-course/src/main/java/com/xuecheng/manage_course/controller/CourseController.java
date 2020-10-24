@@ -13,6 +13,7 @@ import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.manage_course.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -41,6 +42,7 @@ public class CourseController implements CourseControllerApi {
         return courseService.addTeachplan(teachplan);
     }
 
+    @PreAuthorize("hasAuthority('course_get_baseinfo')")
     @Override
     @GetMapping("/coursebase/get/{courseId}")
     public CourseBase getCourseBaseById ( @PathVariable("courseId") String courseId) throws RuntimeException {
@@ -72,6 +74,8 @@ public class CourseController implements CourseControllerApi {
         }
     }
 
+
+    @PreAuthorize("hasAuthority('course_find_list')")
     @Override
     @GetMapping("/coursebase/list/{page}/{size}")
     public QueryResponseResult findCourseList (@PathVariable("page") int page, @PathVariable("size") int size, CourseListRequest courseListRequest) {
@@ -90,6 +94,7 @@ public class CourseController implements CourseControllerApi {
         //保存课程图片
         return courseService.saveCoursePic(courseId,pic);
     }
+
 
     @Override
     @GetMapping("/coursepic/list/{courseId}")
