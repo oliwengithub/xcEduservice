@@ -1,5 +1,7 @@
 package com.xuecheng.framework.utils;
 
+import sun.misc.Perf;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -26,12 +28,12 @@ public class GenerateOrderNum {
 
     /**
      * 生成非重复订单号，理论上限1毫秒1000个，可扩展
-     * @param tname 测试用
+     * @param prefix
      */
-    public synchronized void generate(String tname) {
+    public synchronized String generate(String prefix) {
+        // 最终生成的订单号
+        StringBuffer finOrderNum = new StringBuffer(prefix);
         try {
-            // 最终生成的订单号
-            String finOrderNum = "";
             synchronized (lockObj) {
                 // 取系统当前时间作为订单号变量前半部分，精确到毫秒
                 long nowLong = Long.parseLong(new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()));
@@ -40,21 +42,21 @@ public class GenerateOrderNum {
                     orderNumCount = 0L;
                 }
                 //组装订单号
-                String countStr=maxPerMSECSize +orderNumCount+"";
-                finOrderNum=nowLong+countStr.substring(1);
+                String countStr = (maxPerMSECSize +orderNumCount+"").substring(1);
+                finOrderNum = finOrderNum.append(nowLong).append(countStr);
                 orderNumCount++;
-                System.out.println(finOrderNum + "--" + Thread.currentThread().getName() + "::" + tname );
-                // Thread.sleep(1000);
+                System.out.println(finOrderNum.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return finOrderNum.toString();
     }
 
     public static void main(String[] args) {
         // 测试多线程调用订单号生成工具
-        /*try {
-            for (int i = 0; i < 200; i++) {
+        try {
+            for (int i = 0; i < 20000; i++) {
                 Thread t1 = new Thread(new Runnable() {
                     public void run() {
                         GenerateOrderNum generateOrderNum = new GenerateOrderNum();
@@ -73,7 +75,7 @@ public class GenerateOrderNum {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
         System.out.println(System.currentTimeMillis());
     }
 }

@@ -27,9 +27,9 @@ import java.util.Map;
 
 /**
  * http请求客户端
- * 
+ *
  * @author Administrator
- * 
+ *
  */
 public class HttpClient {
 	private String url;
@@ -82,6 +82,7 @@ public class HttpClient {
 
 	public void put() throws ClientProtocolException, IOException {
 		HttpPut http = new HttpPut(url);
+		http.addHeader("Content-Type", "text/xml");
 		setEntity(http);
 		execute(http);
 	}
@@ -147,7 +148,7 @@ public class HttpClient {
 					HttpEntity entity = response.getEntity();
 					// 响应内容
 					content = EntityUtils.toString(entity, Consts.UTF_8);
-				}
+			}
 			} finally {
 				response.close();
 			}
