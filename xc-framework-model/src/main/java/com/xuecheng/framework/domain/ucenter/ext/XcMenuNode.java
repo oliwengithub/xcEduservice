@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 @ToString
-public class XcMenuExt extends XcMenu {
+public class XcMenuNode extends XcMenu {
 
     List<CategoryNode> children;
 }

@@ -32,7 +32,7 @@ public class ZipUtil {
         zipFile.extractAll(targetPath);
     }
 
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args) throws Exception {
         ZipUtil.unzip("F:\\develop\\upload\\upload.zip","F:\\develop\\upload\\zip\\");
-    }
+    }*/
 }

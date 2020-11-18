@@ -1,6 +1,5 @@
 package com.xuecheng.framework.utils;
 
-import sun.misc.Perf;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,7 +52,7 @@ public class GenerateOrderNum {
         return finOrderNum.toString();
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         // 测试多线程调用订单号生成工具
         try {
             for (int i = 0; i < 20000; i++) {
@@ -77,5 +76,5 @@ public class GenerateOrderNum {
             e.printStackTrace();
         }
         System.out.println(System.currentTimeMillis());
-    }
+    }*/
 }

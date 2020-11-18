@@ -17,6 +17,8 @@ public enum OrderCode implements ResultCode {
     ORDER_FINISH_NOTFOUNDORDER(false,41004,"找不到订单信息！"),
     Pay_NOTFOUNDORDER(false,41010,"找不到要支付的订单！"),
     Pay_USERERROR(false,41011,"支付用户与订单用户不一致！"),
+    Pay_ERROR(false,41013,"下单支付失败！"),
+    Pay_ORDERPAID(true,41014,"该订单已支付！"),
     Pay_NOTFOUNDPAY(false,41012,"支付记录不存在！");
 
     //操作代码

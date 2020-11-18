@@ -19,4 +19,7 @@ public class XcUserExt extends XcUser {
 
     //企业信息
     private String companyId;
+
+    // 用户角色
+    private String roleId;
 }

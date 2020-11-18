@@ -26,6 +26,7 @@ public class CourseMarket implements Serializable {
     private String valid;
     private String qq;
     private Float price;
+    @Column(name = "price_old")
     private Float price_old;
 //    private Date expires;
     @Column(name = "start_time")

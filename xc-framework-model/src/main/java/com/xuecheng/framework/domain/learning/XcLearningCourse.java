@@ -24,6 +24,12 @@ public class XcLearningCourse implements Serializable {
     private String id;
     @Column(name = "course_id")
     private String courseId;
+    @Column(name = "course_name")
+    private String courseName;
+    @Column(name = "teachplan_id")
+    private String teachplanId;
+    @Column(name = "teachplan_name")
+    private String teachplanName;
     @Column(name = "user_id")
     private String userId;
     private String valid;
@@ -32,5 +38,9 @@ public class XcLearningCourse implements Serializable {
     @Column(name = "end_time")
     private Date endTime;
     private String status;
+    @Column(name="complete_percent")
+    private String completePercent;
+    @Column(name="updateTime")
+    private String updateTime;
 
 }

@@ -24,12 +24,14 @@ public class XcOrdersDetail implements Serializable {
     private String id;
     @Column(name = "order_number")
     private String orderNumber;
-    @Column(name = "item_id")
-    private String itemId;
-    @Column(name = "item_num")
-    private Integer itemNum;
-    @Column(name = "item_price")
-    private Float itemPrice;
+    @Column(name = "course_id")
+    private String courseId;
+    @Column(name = "user_id")
+    private String userId;
+    @Column(name = "course_num")
+    private Integer courseNum;
+    @Column(name = "course_price")
+    private Float coursePrice;
     private String valid;
     @Column(name = "start_time")
     private Date startTime;

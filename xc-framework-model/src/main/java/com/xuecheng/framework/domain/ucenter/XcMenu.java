@@ -22,8 +22,6 @@ public class XcMenu {
     @Column(length = 32)
     private String id;
     private String code;
-    @Column(name="p_code")
-    private String pCode;
     @Column(name="p_id")
     private String pId;
     @Column(name="menu_name")
@@ -31,7 +29,6 @@ public class XcMenu {
     private String url;
     @Column(name="is_menu")
     private String isMenu;
-    private Integer level;
     private Integer sort;
     private String status;
     private String icon;

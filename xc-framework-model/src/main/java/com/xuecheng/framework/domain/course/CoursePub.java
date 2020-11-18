@@ -35,10 +35,14 @@ public class CoursePub implements Serializable {
     private String charge;
     private String valid;
     private String qq;
-    private Double price;
-    private Double price_old;
+    private Float price;
+    private Float price_old;
     private String expires;
     private String teachplan;//课程计划
     @Column(name="pub_time")
     private String pubTime;//课程发布时间
+    @Column(name="start_time")
+    private String startTime;//课程开始时间
+    @Column(name="end_time")
+    private String endTime;//课程结束时间
 }

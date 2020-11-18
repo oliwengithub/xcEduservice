@@ -141,7 +141,7 @@ public class MD5Util {
      *
      * @param args the arguments
      */
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
 
         long beginTime = System.currentTimeMillis();
         File fileZIP = new File("D:\\BaiduNetdiskDownload\\test1.avi");
@@ -156,7 +156,7 @@ public class MD5Util {
         System.out.println("MD5:" + md5 + "\n time:" + ((endTime - beginTime)) + "ms");
 
         System.out.println(getStringMD5("111111"));
-    }
+    }*/
 
     /**
       * MD5编码

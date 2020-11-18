@@ -141,7 +141,7 @@ public class HlsVideoUtil extends  VideoUtil {
 
 
 
-    public static void main(String[] args) throws IOException {
+   /* public static void main(String[] args) throws IOException {
         String ffmpeg_path = "D:\\Program Files\\ffmpeg-20180227-fa0c9d6-win64-static\\bin\\ffmpeg.exe";//ffmpeg的安装位置
         String video_path = "E:\\ffmpeg_test\\1.mp4";
         String m3u8_name = "1.m3u8";
@@ -150,5 +150,5 @@ public class HlsVideoUtil extends  VideoUtil {
         String s = videoUtil.generateM3u8();
         System.out.println(s);
         System.out.println(videoUtil.get_ts_list());
-    }
+    }*/
 }
