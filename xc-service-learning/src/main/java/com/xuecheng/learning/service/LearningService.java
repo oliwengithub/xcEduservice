@@ -108,7 +108,7 @@ public class LearningService {
         // 选课状态 501001正常 501002结束 501003取消 501004未选课
         xcLearningCourse.setStatus("501001");
         xcLearningCourseRepository.save(xcLearningCourse);
-        // 向历史任务表播入记录
+        // 向历史任务表插入记录
         Optional<XcTaskHis> optional = xcTaskHisRepository.findById(xcTask.getId());
         if(!optional.isPresent()) {
             // 添加历史任务

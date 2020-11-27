@@ -49,7 +49,7 @@ public class TestDao {
 
     @Test
     public void testTeachMapper(){
-        TeachplanNode teachplanNode = teachMapper.selectList("4028e581617f945f01617f9dabc40000");
+        TeachplanNode teachplanNode = teachMapper.selectList("");
         System.out.println(teachplanNode);
 
     }

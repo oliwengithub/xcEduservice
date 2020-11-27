@@ -150,13 +150,12 @@ public class CourseService {
     }
 
     //课程列表分页查询
-    public QueryResponseResult findCourseList (int page, int size, CourseListRequest
-            courseListRequest) {
+    public QueryResponseResult findCourseList (int page, int size, CourseListRequest courseListRequest) {
         if (courseListRequest == null) {
             courseListRequest = new CourseListRequest();
         }
         if (page <= 0) {
-            page = 0;
+            page = 1;
         }
         if (size <= 0) {
             size = 20;
@@ -170,10 +169,10 @@ public class CourseService {
         //总记录数
         long total = courseListPage.getTotal();
         //查询结果集
-        QueryResult<CourseInfo> courseIncfoQueryResult = new QueryResult<CourseInfo>();
-        courseIncfoQueryResult.setList(list);
-        courseIncfoQueryResult.setTotal(total);
-        return new QueryResponseResult(CommonCode.SUCCESS, courseIncfoQueryResult);
+        QueryResult<CourseInfo> courseInfoQueryResult = new QueryResult<CourseInfo>();
+        courseInfoQueryResult.setList(list);
+        courseInfoQueryResult.setTotal(total);
+        return new QueryResponseResult(CommonCode.SUCCESS, courseInfoQueryResult);
     }
 
     //添加课程提交
@@ -240,6 +239,7 @@ public class CourseService {
             one.setStartTime(courseMarket.getStartTime());//课程有效期，开始时间
             one.setEndTime(courseMarket.getEndTime());//课程有效期，结束时间
             one.setPrice(courseMarket.getPrice());
+            one.setPrice_old(courseMarket.getPrice_old());
             one.setQq(courseMarket.getQq());
             one.setValid(courseMarket.getValid());
             courseMarketRepository.save(one);
@@ -260,7 +260,7 @@ public class CourseService {
         //查询课程图片
         Optional<CoursePic> picOptional = coursePicRepository.findById(courseId);
         CoursePic coursePic = null;
-        if (picOptional.isPresent()) {
+            if (picOptional.isPresent()) {
             coursePic = picOptional.get();
         }
         //没有课程图片则新建对象
@@ -494,7 +494,12 @@ public class CourseService {
         Optional<CourseMarket> marketOptional = courseMarketRepository.findById(id);
         if(marketOptional.isPresent()){
             CourseMarket courseMarket = marketOptional.get();
+            SimpleDateFormat sdf = new SimpleDateFormat("YYYY‐MM‐dd HH:mm:ss");
+            Date startTime = courseMarket.getStartTime();
+            Date endTime = courseMarket.getEndTime();
             BeanUtils.copyProperties(courseMarket, coursePub);
+            coursePub.setStartTime(sdf.format(startTime));
+            coursePub.setEndTime(sdf.format(endTime));
         }
         //课程计划
         TeachplanNode teachplanNode = teachMapper.selectList(id);

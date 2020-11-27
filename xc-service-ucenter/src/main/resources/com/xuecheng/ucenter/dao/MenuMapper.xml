@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xuecheng.ucenter.dao.MenuMapper">
+
+    <resultMap id="menuMap" type="com.xuecheng.framework.domain.ucenter.ext.XcMenuNode">
+        <id column="one_id" property="id"></id>
+        <result column="one_pname" property="menuName"></result>
+        <result column="one_code" property="code"></result>
+        <result column="one_label" property="label"></result>
+        <collection property="children" ofType="com.xuecheng.framework.domain.ucenter.ext.XcMenuNode">
+            <id column="two_id" property="id"></id>
+            <result column="two_pname" property="menuName"></result>
+            <result column="two_code" property="code"></result>
+            <result column="two_label" property="label"></result>
+            <collection property="children" ofType="com.xuecheng.framework.domain.ucenter.ext.XcMenuNode">
+                <id column="three_id" property="id"></id>
+                <result column="three_pname" property="menuName"></result>
+                <result column="three_code" property="code"></result>
+                <result column="three_label" property="label"></result>
+                <collection property="children" ofType="com.xuecheng.framework.domain.ucenter.ext.XcMenuNode">
+                    <id column="four_id" property="id"></id>
+                    <result column="four_pname" property="menuName"></result>
+                    <result column="four_code" property="code"></result>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findMenuByUserId" parameterType="java.lang.String" resultType="com.xuecheng.framework.domain.ucenter.XcMenu">
+        SELECT mu.id, mu.code, mu.p_id pId, mu.menu_name menuName, mu.url, mu.is_menu isMenu, mu.`level`, mu.sort,
+            mu.`status`, mu.icon, mu.create_time createTime, mu.update_time updateTime
+            FROM xc_menu mu WHERE mu.id
+            IN (SELECT xp.menu_id FROM xc_permission xp WHERE xp.role_id
+	            IN (SELECT xur.role_id FROM xc_user_role xur WHERE xur.user_id = #{userId} )
+            )
+            AND mu.status = '1'
+
+    </select>
+
+    <select id="findMenuList" parameterType="com.xuecheng.framework.domain.ucenter.request.RequestMenuList" resultType="com.xuecheng.framework.domain.ucenter.XcMenu">
+        SELECT mu.id, mu.code, mu.p_id pId, mu.menu_name menuName, mu.url, mu.is_menu isMenu, mu.`level`, mu.sort,
+            mu.`status`, mu.icon, mu.create_time createTime, mu.update_time updateTime
+            FROM xc_menu mu
+        <where>
+            <if test="menuName != null and menuName != ''">
+                AND mu.menu_name LIKE CONCAT(CONCAT('%', #{menuName}),'%')
+            </if>
+            AND mu.status = '1'
+        </where>
+
+    </select>
+
+    <select id="findMenuTree" parameterType="java.lang.String" resultMap="menuMap">
+         SELECT
+            a.id one_id,
+            a.menu_name one_pname,
+            a.code one_code,
+            b.id two_id,
+            b.menu_name two_pname,
+            b.code two_code,
+            c.id three_id,
+            c.menu_name three_pname,
+            c.code three_code,
+            d.id four_id,
+            d.menu_name four_pname,
+            d.code four_code
+        FROM xc_menu a
+        LEFT JOIN xc_menu b ON b.p_id = a.id
+        LEFT JOIN xc_menu c ON c.p_id = b.id AND c.status = '1'
+        LEFT JOIN xc_menu d ON d.p_id = c.id AND d.status = '1'
+        WHERE a.p_id = '0'
+        <if test="id!=null and id!='' ">
+            AND a.id = #{id}
+        </if>
+
+    </select>
+
+</mapper>

@@ -1,5 +1,6 @@
 package com.xuecheng.manage_course.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.xuecheng.api.course.CourseControllerApi;
 import com.xuecheng.framework.domain.cms.response.CoursePreviewResult;
 import com.xuecheng.framework.domain.cms.response.CoursePublishResult;
@@ -11,10 +12,15 @@ import com.xuecheng.framework.domain.course.response.AddCourseResult;
 import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.ResponseResult;
+import com.xuecheng.framework.utils.Oauth2Util;
+import com.xuecheng.framework.utils.XcOauth2Util;
+import com.xuecheng.framework.web.BaseController;
 import com.xuecheng.manage_course.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.spring.web.json.Json;
 
 /**
  * 课程管理模块
@@ -25,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/course")
-public class CourseController implements CourseControllerApi {
+public class CourseController extends BaseController implements CourseControllerApi   {
 
     @Autowired
     CourseService courseService;
@@ -79,6 +85,11 @@ public class CourseController implements CourseControllerApi {
     @Override
     @GetMapping("/coursebase/list/{page}/{size}")
     public QueryResponseResult findCourseList (@PathVariable("page") int page, @PathVariable("size") int size, CourseListRequest courseListRequest) {
+       XcOauth2Util util = new XcOauth2Util();
+        XcOauth2Util.UserJwt jwt = util.getUserJwtFromHeader(request);
+        if (jwt != null) {
+            courseListRequest.setCompanyId(jwt.getCompanyId());
+        }
         return courseService.findCourseList(page, size, courseListRequest);
     }
 

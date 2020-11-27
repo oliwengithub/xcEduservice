@@ -104,6 +104,8 @@ public class TaskService {
             xcTask.setDeleteTime(new Date());
             XcTaskHis xcTaskHis = new XcTaskHis();
             BeanUtils.copyProperties(xcTask, xcTaskHis);
+            // 105001未完成 105002 完成 105003 错误
+            xcTaskHis.setStatus("105002");
             xcTaskHisRepository.save(xcTaskHis);
             xcTaskRepository.delete(xcTask);
         }

@@ -1,8 +1,10 @@
 package com.xuecheng.manage_course;
 
 
+import com.xuecheng.framework.domain.cms.response.CmsPostPageResult;
 import com.xuecheng.manage_course.client.CmsPageClient;
 import com.xuecheng.framework.domain.cms.CmsPage;
+import com.xuecheng.manage_course.service.CourseService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +21,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class TestFeign {
     @Autowired
     CmsPageClient cmsPageClient;
+    @Autowired
+    CourseService courseService;
+
+    @Test
+    public void testPublishPageFeign(){
+        CmsPostPageResult cmsPostPageResult = courseService.publish_page("4028e581617f945f01617f9dabc40000");
+        System.out.println(cmsPostPageResult);
+
+    }
 
     @Test
     public void testFeign(){
-        CmsPage page = cmsPageClient.findById("5a96114fb00ffc4b44f63e06");
-        System.out.println(page);
+        CmsPage page = cmsPageClient.findById("5f89625c8d58795f488551a3");
+        CmsPostPageResult cmsPostPageResult = cmsPageClient.postPageQuick(page);
+        System.out.println(cmsPostPageResult);
 
     }
 

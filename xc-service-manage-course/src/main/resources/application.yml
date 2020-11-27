@@ -40,7 +40,8 @@ ribbon:
 #课程页面配置信息
 course‐publish:
   siteId: 5cfe61c5619b3b11280bf0b3 #站点id
-  templateId: 5ad9a24d68db5239b8fef199 #模板id
+  # 课程预览正式模板 5aec5dd70e661808240ab7a6 测试模板 5ad9a24d68db5239b8fef199
+  templateId: 5aec5dd70e661808240ab7a6 #模板id
   previewUrl: http://www.xuecheng.com/cms/preview/ #预览url
   pageWebPath: /course/detail/
   pagePhysicalPath: /course/detail/

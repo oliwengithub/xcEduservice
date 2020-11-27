@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xuecheng.order.dao.OrderMapper">
+    <select id="findOrderPayStatus" parameterType="java.lang.String"
+            resultType="com.xuecheng.framework.domain.order.XcOrdersPay">
+        SELECT id, order_number orderNumber, pay_number payNumber, `status` FROM `xc_orders_pay`
+            WHERE
+            order_number IN (select order_number FROM xc_orders_detail WHERE user_id =#{userId} AND course_id =#{courseId})
+        <choose>
+            <when test="status!=null and status!='' ">
+                AND  `status` = #{status}
+            </when>
+            <otherwise>
+            <!-- 没有传支付状态时，默认查询未支付、支付成功两个状态 -->
+                AND  `status` IN ("402001","402002")
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

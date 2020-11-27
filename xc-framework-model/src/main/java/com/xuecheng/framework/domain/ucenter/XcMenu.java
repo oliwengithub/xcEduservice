@@ -22,13 +22,13 @@ public class XcMenu {
     @Column(length = 32)
     private String id;
     private String code;
-    @Column(name="p_id")
-    private String pId;
     @Column(name="menu_name")
     private String menuName;
     private String url;
     @Column(name="is_menu")
     private String isMenu;
+    @Column(name = "p_id")
+    private String parentId;
     private Integer sort;
     private String status;
     private String icon;

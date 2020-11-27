@@ -80,6 +80,10 @@ public class LoginFilter extends ZuulFilter {
             access_denied();
             return null;
         }
+        if (expire <= 600) {
+            // token还有将近10分钟过期是更新token过期时间
+            authService.setExpire(token);
+        }
         return null;
     }
 
@@ -92,12 +96,13 @@ public class LoginFilter extends ZuulFilter {
     */
     private void access_denied() {
         RequestContext requestContext = RequestContext.getCurrentContext();
-        requestContext.setSendZuulResponse(false);// 拒绝访问
-        requestContext.setResponseStatusCode(200);// 设置响应状态码
+        // 拒绝访问
+        requestContext.setSendZuulResponse(false);
+        // 设置响应状态码
+        requestContext.setResponseStatusCode(200);
         ResponseResult unauthenticated = new ResponseResult(CommonCode.UNAUTHENTICATED);
         String jsonString = JSON.toJSONString(unauthenticated);
         requestContext.setResponseBody(jsonString);
-//            requestContext.getResponse().setContentType("application/json;charset=UTF‐8");
         requestContext.getResponse().setHeader("Content-Type", "application/json;charset=UTF-8");
     }
 }

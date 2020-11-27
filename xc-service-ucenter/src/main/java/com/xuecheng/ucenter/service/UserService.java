@@ -1,20 +1,33 @@
 package com.xuecheng.ucenter.service;
 
-import com.xuecheng.framework.domain.ucenter.XcCompanyUser;
-import com.xuecheng.framework.domain.ucenter.XcMenu;
-import com.xuecheng.framework.domain.ucenter.XcUser;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.xuecheng.framework.domain.ucenter.*;
+import com.xuecheng.framework.domain.ucenter.ext.UserInfo;
 import com.xuecheng.framework.domain.ucenter.ext.XcUserExt;
+import com.xuecheng.framework.domain.ucenter.request.UserListRequest;
+import com.xuecheng.framework.domain.ucenter.response.AuthCode;
 import com.xuecheng.framework.domain.ucenter.response.UcenterCode;
 import com.xuecheng.framework.exception.ExceptionCast;
+import com.xuecheng.framework.model.response.CommonCode;
+import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.QueryResult;
-import com.xuecheng.ucenter.dao.XcCompanyUserRepository;
-import com.xuecheng.ucenter.dao.XcMenuMapper;
-import com.xuecheng.ucenter.dao.XcUserRepository;
+import com.xuecheng.framework.model.response.ResponseResult;
+import com.xuecheng.framework.utils.BCryptUtil;
+import com.xuecheng.ucenter.dao.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.auth.AUTH;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -33,7 +46,13 @@ public class UserService {
     private XcUserRepository xcUserRepository;
 
     @Autowired
-    private XcMenuMapper xcMenuMapper;
+    private XcUserRoleRepository xcUserRoleRepository;
+
+    @Autowired
+    private MenuMapper menuMapper;
+
+    @Autowired
+    private XcUserMapper xcUserMapper;
 
     /**
      * 获取用户信息
@@ -62,10 +81,18 @@ public class UserService {
             xcUserExt.setCompanyId(xcCompanyUser.getCompanyId());
         }
         // 获取用户的权限
-        List<XcMenu> menuList = xcMenuMapper.findMenuByUserId(userId);
+        List<XcMenu> menuList = menuMapper.findMenuByUserId(userId);
         if (menuList != null && menuList.size() > 0) {
             xcUserExt.setPermissions(menuList);
         }
+        // 获取用户角色
+        List<XcUserRole> xcUserRoleList= xcUserRoleRepository.findXcUserRoleByUserId(userId);
+        if (xcUserRoleList != null && xcUserRoleList.size() > 0) {
+
+            String roles = xcUserRoleList.stream().map(xcUserRole -> String.valueOf(xcUserRole.getRoleId())).collect(Collectors.joining(","));
+            xcUserExt.setRoleId(roles);
+        }
+
         return xcUserExt;
 
     }
@@ -92,21 +119,226 @@ public class UserService {
         return xcCompanyUserRepository.findByUserId(userId);
     }
 
-    public QueryResult<XcUser> findAll () {
+    /**
+     * 获取用户列表
+     * @author: olw
+     * @Date: 2020/10/29 16:41
+     * @param page
+     * @param size
+     * @param userListRequest
+     * @returns: com.xuecheng.framework.model.response.QueryResponseResult
+    */
+    public QueryResponseResult findUserList (int page, int size, UserListRequest userListRequest) {
 
-        return new QueryResult<>();
+        if (userListRequest == null) {
+            userListRequest = new UserListRequest();
+        }
+
+        page = page <=0 ? 1:page;
+        size = size <=0 ? 20:size;
+        // 设置分页参数
+        PageHelper.startPage(page, size);
+        Page<UserInfo> userListPage = xcUserMapper.findUserListPage(userListRequest);
+        // 总记录条数
+        long total = userListPage.getTotal();
+        QueryResult<UserInfo> queryResult = new QueryResult<>();
+        queryResult.setTotal(total);
+        queryResult.setList(userListPage.getResult());
+        return new QueryResponseResult<>(CommonCode.SUCCESS, queryResult);
     }
 
-    public boolean add (XcUser user) {
-        return true;
+    /**
+     * 添加用户
+     * @author: olw
+     * @Date: 2020/11/24 17:35
+     * @param userInfo
+     * @returns: com.xuecheng.framework.model.response.ResponseResult
+    */
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult add (UserInfo userInfo) {
+        // 校验用户名称是否已存在
+        XcUser xcUserByUsername = this.findXcUserByUsername(userInfo.getUsername());
+        if (xcUserByUsername != null) {
+            ExceptionCast.cast(AuthCode.AUTH_USERNAME_EXIST);
+        }
+        //保存用户信息
+        XcUser xcUser = new XcUser();
+        BeanUtils.copyProperties(userInfo, xcUser);
+        xcUser.setPassword(BCryptUtil.encode(userInfo.getPassword()));
+        xcUser.setCreateTime(new Date());
+        xcUser.setUpdateTime(new Date());
+        XcUser user = xcUserRepository.save(xcUser);
+        //保存用户角色信息
+        String[] split = userInfo.getRoleIds().split(",");
+        List<XcUserRole> userRoles = Arrays.stream(split).map(s -> {
+            XcUserRole xcUserRole = new XcUserRole();
+            xcUserRole.setUserId(user.getId());
+            xcUserRole.setCreateTime(new Date());
+            xcUserRole.setRoleId(s);
+            return xcUserRole;
+        }).collect(Collectors.toList());
+
+        xcUserRoleRepository.saveAll(userRoles);
+        //根据用户的类型存储用户扩展信息
+        String companyId = userInfo.getCompanyId();
+        if (StringUtils.isNotEmpty(companyId)) {
+            // 保存老师机构信息
+            XcCompanyUser xcCompanyUser = new XcCompanyUser();
+            xcCompanyUser.setCompanyId(companyId);
+            xcCompanyUser.setUserId(user.getId());
+            xcCompanyUserRepository.save(xcCompanyUser);
+        }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
-
-    public boolean del (String userId) {
-        return true;
+    public ResponseResult updateStatus (XcUser user) {
+        XcUser one = this.findXcUserByUsername(user.getUsername());
+        if (one == null) {
+            ExceptionCast.cast(AuthCode.AUTH_USER_NOEXIST);
+        }
+        one.setStatus(user.getStatus());
+        one.setUpdateTime(new Date());
+        xcUserRepository.save(one);
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
-    public boolean update (XcUser user) {
-        return true;
+    /**
+     * 根据用户id获取用户信息
+     * @author: olw
+     * @Date: 2020/10/29 16:08
+     * @param userId
+     * @returns: com.xuecheng.framework.domain.ucenter.ext.UserInfo
+    */
+    public UserInfo getUserInfo (String userId) {
+        UserInfo userInfo = new UserInfo();
+        // 获取用户信息
+        Optional<XcUser> optional = xcUserRepository.findById(userId);
+        if (optional.isPresent()) {
+            BeanUtils.copyProperties(optional.get(), userInfo);
+        }
+        // 获取用户角色信息
+        List<XcUserRole> xcUserRoleList= xcUserRoleRepository.findXcUserRoleByUserId(userId);
+        if (xcUserRoleList != null && xcUserRoleList.size() > 0) {
+
+            String roles = xcUserRoleList.stream().map(xcUserRole -> String.valueOf(xcUserRole.getRoleId())).collect(Collectors.joining(","));
+            userInfo.setRoleIds(roles);
+        }
+        // 获取用户机构信息
+        XcCompanyUser xcCompanyUser = xcCompanyUserRepository.findByUserId(userId);
+        if (xcCompanyUser != null) {
+            userInfo.setCompanyId(xcCompanyUser.getCompanyId());
+        }
+        return userInfo;
+    }
+
+    /**
+     * 修改用户信息
+     * @author: olw
+     * @Date: 2020/11/24 17:52
+     * @param userInfo
+     * @returns: com.xuecheng.framework.model.response.ResponseResult
+    */
+    @Modifying
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult editInfo (UserInfo userInfo) {
+        String userId = userInfo.getId();
+        // 获取用户信息
+        XcUser xcUserByUsername = this.findXcUserByUsername(userInfo.getUsername());
+        if (xcUserByUsername == null) {
+            ExceptionCast.cast(AuthCode.AUTH_USER_NOEXIST);
+        }
+        // 更新用户信息
+        XcUser xcUser = new XcUser();
+        BeanUtils.copyProperties(userInfo, xcUser);
+        xcUser.setId(xcUserByUsername.getId());
+        xcUser.setUsername(xcUserByUsername.getUsername());
+        xcUser.setPassword(xcUserByUsername.getPassword());
+        xcUser.setUpdateTime(new Date());
+        xcUser.setCreateTime(xcUserByUsername.getCreateTime());
+
+        xcUserRepository.save(xcUser);
+        // 更新用户角色信息
+        // 考虑用户角色关联的数据不多 一个用户也就一两个角色 所有采用直接删除全部在更新
+        // 获取已存在的角色
+        List<XcUserRole> xcUserRoleByUserId = xcUserRoleRepository.findXcUserRoleByUserId(userId);
+        xcUserRoleRepository.deleteAll(xcUserRoleByUserId);
+        // 添加
+        String[] split = userInfo.getRoleIds().split(",");
+        List<XcUserRole> xcUserRoles = Arrays.stream(split).map(s -> {
+            XcUserRole xcUserRole = new XcUserRole();
+            xcUserRole.setCreateTime(new Date());
+            xcUserRole.setUserId(userInfo.getId());
+            xcUserRole.setRoleId(s);
+            return xcUserRole;
+        }).collect(Collectors.toList());
+        xcUserRoleRepository.saveAll(xcUserRoles);
+        // 获取机构信息   存在就更新 一个人只属于一个机构
+        XcCompanyUser companyUser = xcCompanyUserRepository.findByUserId(userId);
+        String companyId = userInfo.getCompanyId();
+        // 是否存在机构
+        if (companyUser == null && StringUtils.isNotEmpty(companyId)){
+            // 添加机构
+            XcCompanyUser xcCompanyUser = new XcCompanyUser();
+            xcCompanyUser.setCompanyId(companyId);
+            xcCompanyUser.setUserId(userId);
+            xcCompanyUserRepository.save(xcCompanyUser);
+        }else if (companyUser != null) {
+            //更新机构
+            if(StringUtils.isEmpty(companyId)){
+                // 删除绑定的机构
+                xcCompanyUserRepository.delete(companyUser);
+            }else if (!companyUser.getCompanyId().equals(companyId)) {
+                 // 判定是否一致
+                 companyUser.setCompanyId(companyId);
+                 xcCompanyUserRepository.save(companyUser);
+             }
+        }
+
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 修改用户信息(个人中心修改信息)
+     * @author: olw
+     * @Date: 2020/11/24 19:33
+     * @param xcUser
+     * @returns: com.xuecheng.framework.model.response.ResponseResult
+    */
+    public ResponseResult edit (XcUser xcUser) {
+        XcUser one = this.findXcUserByUsername(xcUser.getUsername());
+        if (one == null) {
+            ExceptionCast.cast(AuthCode.AUTH_USER_NOEXIST);
+        }
+        one.setEmail(xcUser.getEmail());
+        one.setPhone(xcUser.getPhone());
+        one.setSex(xcUser.getSex());
+        one.setUserpic(xcUser.getUserpic());
+        one.setName(xcUser.getName());
+        one.setBirthday(xcUser.getBirthday());
+        one.setUpdateTime(new Date());
+        xcUserRepository.save(one);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 重置用户密码
+     * @author: olw
+     * @Date: 2020/11/25 17:47
+     * @param xcUser
+     * @returns: com.xuecheng.framework.model.response.ResponseResult
+    */
+    public ResponseResult resetPassword (XcUser xcUser) {
+        Optional<XcUser> optional = xcUserRepository.findById(xcUser.getId());
+        if (!optional.isPresent()) {
+            ExceptionCast.cast(AuthCode.AUTH_USER_NOEXIST);
+        }
+        if (StringUtils.isEmpty(xcUser.getPassword())){
+            ExceptionCast.cast(AuthCode.AUTH_PASSWORD_NONE);
+        }
+        XcUser user = optional.get();
+        user.setPassword(BCryptUtil.encode(xcUser.getPassword()));
+        user.setUpdateTime(new Date());
+        xcUserRepository.save(user);
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 }

@@ -56,10 +56,10 @@ public interface CourseControllerApi {
     public CourseView courseView(String id);
 
     @ApiOperation("预览课程")
-    public CoursePreviewResult preview(@PathVariable String id);
+    public CoursePreviewResult preview(String id);
 
     @ApiOperation("发布课程")
-    public CoursePublishResult publish(@PathVariable String id);
+    public CoursePublishResult publish(String id);
 
     @ApiOperation("保存媒资和课程关联的信息")
     public ResponseResult savemedia(TeachplanMedia teachplanMedia);

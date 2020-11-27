@@ -15,6 +15,8 @@ spring:
         maxIdle: 3
         minIdle: 1
         maxWait: -1 #连接池最大等行时间 -1没有限制
+auth:
+  tokenValiditySeconds: 1200  #token存储到redis的过期时间(s)
 zuul:
   routes:
     manage-course:
@@ -48,6 +50,11 @@ zuul:
     xc-service-manage-order:
       path: /order/**
       serviceId: xc-service-manage-order
+      sensitiveHeaders:
+      strip-prefix: false
+    xc-base-filesystem:
+      path: /filesystem/**
+      serviceId: xc-base-filesystem
       sensitiveHeaders:
       strip-prefix: false
 

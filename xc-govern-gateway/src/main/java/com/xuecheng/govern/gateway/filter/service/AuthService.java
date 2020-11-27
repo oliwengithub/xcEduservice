@@ -3,11 +3,13 @@ package com.xuecheng.govern.gateway.filter.service;
 import com.xuecheng.framework.utils.CookieUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -20,6 +22,9 @@ public class AuthService {
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
+
+    @Value("${auth.tokenValiditySeconds}")
+    private long tokenValiditySeconds;
 
     /**
      * 查询身份令牌
@@ -69,5 +74,18 @@ public class AuthService {
         String key = "user_token:"+access_token;
         Long expire = stringRedisTemplate.getExpire(key);
         return expire;
+    }
+
+    /**
+     * 查询令牌的有效期
+     * @author: olw
+     * @Date: 2020/10/20 18:04
+     * @param access_token
+     * @returns: long
+     */
+    public void setExpire(String access_token) {
+        //token在redis中的key
+        String key = "user_token:"+access_token;
+        stringRedisTemplate.expire(key, tokenValiditySeconds, TimeUnit.SECONDS);
     }
 }

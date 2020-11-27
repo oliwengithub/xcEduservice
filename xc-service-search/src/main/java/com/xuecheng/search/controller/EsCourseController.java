@@ -24,7 +24,7 @@ public class EsCourseController implements EsCourseControllerApi {
     EsCourseService esCourseService;
 
     @Override
-    @GetMapping(value="/list/{page}/{size}")
+    @GetMapping("/list/{page}/{size}")
     public QueryResponseResult<CoursePub> list(@PathVariable("page") int page,@PathVariable("size") int size, CourseSearchParam courseSearchParam) {
         return esCourseService.list(page,size,courseSearchParam);
     }
@@ -32,7 +32,9 @@ public class EsCourseController implements EsCourseControllerApi {
     @Override
     @GetMapping("/getall/{id}")
     public Map<String, CoursePub> getAll (@PathVariable("id") String id) {
-        return esCourseService.getAll(id);
+        // 将参数封装成数组参数方便接口参数拓展
+        String[] ids = id.split(",");
+        return esCourseService.getAll(ids);
     }
 
     @Override
@@ -46,5 +48,13 @@ public class EsCourseController implements EsCourseControllerApi {
             return teachplanMediaPubs.get(0);
         }
         return null;
+    }
+
+    @Override
+    @GetMapping("/getlistmedia/{teachplanId}")
+    public QueryResponseResult getListMedia (@PathVariable("teachplanId") String teachplanId) {
+        // 将参数封装成数组参数方便接口参数拓展
+        String[] teachplanIds = new String[]{teachplanId};
+        return esCourseService.getMedia(teachplanIds);
     }
 }

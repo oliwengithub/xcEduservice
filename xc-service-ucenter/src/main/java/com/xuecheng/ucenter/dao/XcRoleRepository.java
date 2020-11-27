@@ -5,4 +5,6 @@ import com.xuecheng.framework.domain.ucenter.XcUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface XcRoleRepository extends JpaRepository<XcRole, String> {
+
+    public XcRole findByRoleNameOrRoleCode (String roleName, String roleCode);
 }

@@ -11,7 +11,7 @@ import lombok.ToString;
  */
 @ToString
 public enum MenuCode implements ResultCode {
-    MENU_CODE_EXIST(false,27000,"菜单code已经存在！"),
+    MENU_CODE_EXIST(false,27000,"菜单编码已经存在！"),
     MENU_CODE_NOTEXIST(false,23002,"菜单不存在！"),
     UCENTER_VERIFYCODE_NONE(false,23003,"请输入验证码！"),
     UCENTER_ACCOUNT_NOTEXISTS(false,23004,"账号不存在！"),

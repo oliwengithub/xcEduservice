@@ -19,4 +19,5 @@ public interface AuthControllerApi {
 
     @ApiOperation("查询jwt令牌")
     public JwtResult userJwt();
+
 }

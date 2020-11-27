@@ -8,6 +8,6 @@ import lombok.ToString;
 @ToString
 public class UserInfo extends XcUser {
 
-    private String roleName;
-    private String companyName;
+    private String roleIds;
+    private String companyId;
 }

@@ -1,3 +1,4 @@
+/*
 package com.xuecheng.auth;
 
 import com.alibaba.fastjson.JSON;
@@ -12,10 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+*/
 /**
  * @author Administrator
  * @version 1.0
- **/
+ **//*
+
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class TestRedis {
@@ -47,3 +50,4 @@ public class TestRedis {
 
 
 }
+*/

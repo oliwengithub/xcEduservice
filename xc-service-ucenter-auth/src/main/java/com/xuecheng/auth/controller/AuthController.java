@@ -1,7 +1,9 @@
 package com.xuecheng.auth.controller;
 
 import com.xuecheng.api.auth.AuthControllerApi;
+import com.xuecheng.api.auth.UserRegisterControllerApi;
 import com.xuecheng.auth.service.AuthService;
+import com.xuecheng.framework.domain.ucenter.XcUser;
 import com.xuecheng.framework.domain.ucenter.ext.AuthToken;
 import com.xuecheng.framework.domain.ucenter.request.LoginRequest;
 import com.xuecheng.framework.domain.ucenter.response.AuthCode;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -30,7 +30,7 @@ import java.util.Map;
  **/
 @RestController
 @RequestMapping("/")
-public class AuthController implements AuthControllerApi {
+public class AuthController implements AuthControllerApi, UserRegisterControllerApi {
 
     @Value("${auth.clientId}")
     String clientId;
@@ -91,6 +91,18 @@ public class AuthController implements AuthControllerApi {
             new JwtResult(CommonCode.FAIL, null);
         }
         return new JwtResult(CommonCode.SUCCESS, authToken.getJwt_token());
+    }
+
+    @Override
+    @PostMapping("/register")
+    public ResponseResult register (XcUser xcUser) {
+        return authService.register(xcUser);
+    }
+
+    @Override
+    @PostMapping("/checkusername")
+    public ResponseResult checkUsername (String username) {
+        return authService.checkUsername(username);
     }
 
     /**

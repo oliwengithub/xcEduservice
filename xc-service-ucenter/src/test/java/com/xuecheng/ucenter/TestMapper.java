@@ -1,11 +1,13 @@
 package com.xuecheng.ucenter;
 
-import com.netflix.discovery.converters.Auto;
-import com.xuecheng.framework.domain.ucenter.XcMenu;
-import com.xuecheng.ucenter.dao.XcMenuMapper;
+import com.github.pagehelper.Page;
+import com.xuecheng.framework.domain.ucenter.ext.UserInfo;
+import com.xuecheng.framework.domain.ucenter.ext.XcMenuNode;
+import com.xuecheng.framework.domain.ucenter.request.UserListRequest;
+import com.xuecheng.ucenter.dao.MenuMapper;
+import com.xuecheng.ucenter.dao.XcUserMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -17,11 +19,23 @@ import java.util.List;
 public class TestMapper {
 
     @Resource
-    XcMenuMapper xcMenuMapper;
+    MenuMapper menuMapper;
+
+    @Resource
+    XcUserMapper xcUserMapper;
 
     @Test
     public void testMenuMapper () {
-        List<XcMenu> menuByUserId = xcMenuMapper.findMenuByUserId("49");
-        System.out.println(menuByUserId);
+        //List<XcMenu> menuByUserId = menuMapper.findMenuByUserId("49");
+        List<XcMenuNode> menuTree = menuMapper.findMenuTree(null);
+        System.out.println(menuTree);
+    }
+
+    @Test
+    public void testUserMapper () {
+        UserListRequest userListRequest = new UserListRequest();
+        userListRequest.setSysRoleId("1");
+        Page<UserInfo> userListPage = xcUserMapper.findUserListPage(userListRequest);
+        System.out.println(userListPage);
     }
 }

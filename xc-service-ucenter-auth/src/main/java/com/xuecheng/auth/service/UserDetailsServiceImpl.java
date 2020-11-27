@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Service;
@@ -61,8 +60,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         List<String> user_permission = new ArrayList<>();
         permissions.forEach(item-> user_permission.add(item.getCode()));
-        // user_permission.add("course_get_baseinfo");
-        // user_permission.add("course_find_pic");
         String user_permission_string  = StringUtils.join(user_permission.toArray(), ",");
         UserJwt userDetails = new UserJwt(username,
                 password,
@@ -76,10 +73,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         userDetails.setName(userExt.getName());
         // 用户头像
         userDetails.setUserpic(userExt.getUserpic());
-       /* UserDetails userDetails = new org.springframework.security.core.userdetails.User(username,
-                password,
-                AuthorityUtils.commaSeparatedStringToAuthorityList(""));*/
-//                AuthorityUtils.createAuthorityList("course_get_baseinfo","course_get_list"));
+        // 用户角色id
+        userDetails.setRoleId(userExt.getRoleId());
         return userDetails;
     }
 }

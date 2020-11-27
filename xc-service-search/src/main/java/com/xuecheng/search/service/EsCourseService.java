@@ -1,6 +1,5 @@
 package com.xuecheng.search.service;
 
-import com.xuecheng.framework.domain.cms.request.QueryPageRequest;
 import com.xuecheng.framework.domain.course.CoursePub;
 import com.xuecheng.framework.domain.course.TeachplanMediaPub;
 import com.xuecheng.framework.domain.search.CourseSearchParam;
@@ -136,10 +135,10 @@ public class EsCourseService {
                 String pic = (String) sourceAsMap.get("pic");
                 coursePub.setPic(pic);
                 //价格
-                Double price = null;
+                Float price = 0f;
                 try {
                     if(sourceAsMap.get("price")!=null ){
-                        price = (Double) sourceAsMap.get("price");
+                        price = (Float) sourceAsMap.get("price");
                     }
 
                 } catch (Exception e) {
@@ -147,10 +146,10 @@ public class EsCourseService {
                 }
                 coursePub.setPrice(price);
                 //旧价格
-                Double price_old = null;
+                Float price_old = 0f;
                 try {
                     if(sourceAsMap.get("price_old")!=null ){
-                        price_old = (Double) sourceAsMap.get("price_old");
+                        price_old = (Float) sourceAsMap.get("price_old");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -175,10 +174,10 @@ public class EsCourseService {
      *  根据课程id查询课程所有章节信息
      * @author: olw
      * @Date: 2020/10/11 10:54
-     * @param id
+     * @param ids
      * @returns: java.util.Map<java.lang.String,com.xuecheng.framework.domain.course.CoursePub>
     */
-    public Map<String, CoursePub> getAll (String id) {
+    public Map<String, CoursePub> getAll (String[] ids) {
 
         // 设置索引库
         SearchRequest searchRequest = new SearchRequest(course_index);
@@ -186,7 +185,7 @@ public class EsCourseService {
         searchRequest.types(course_type);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         // 查询条件，根据课程id查询
-        searchSourceBuilder.query(QueryBuilders.termsQuery("id", id));
+        searchSourceBuilder.query(QueryBuilders.termsQuery("id", ids));
         // 取消source源字段过虑，查询所有字段
         // searchSourceBuilder.fetchSource(new String[]{"name", "grade", "charge","pic"}, newString[]{});
         searchRequest.source(searchSourceBuilder);
@@ -204,21 +203,32 @@ public class EsCourseService {
         for (SearchHit hit : searchHits) {
             String courseId = hit.getId();
             Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-            String courseid = (String) sourceAsMap.get("id");
             String name = (String) sourceAsMap.get("name");
             String grade = (String) sourceAsMap.get("grade");
             String charge = (String) sourceAsMap.get("charge");
             String pic = (String) sourceAsMap.get("pic");
             String description = (String) sourceAsMap.get("description");
             String teachplan = (String) sourceAsMap.get("teachplan");
+            Float price = new Double((double) sourceAsMap.get("price")).floatValue();
+            Float price_old = new Double((double) sourceAsMap.get("price_old")).floatValue();
+            String valid = (String) sourceAsMap.get("valid");
+            String startTime = (String) sourceAsMap.get("start_time");
+            String endTime = (String) sourceAsMap.get("end_time");
+
             CoursePub coursePub = new CoursePub();
             coursePub.setId(courseId);
             coursePub.setName(name);
             coursePub.setPic(pic);
-
             coursePub.setGrade(grade);
             coursePub.setTeachplan(teachplan);
             coursePub.setDescription(description);
+            coursePub.setCharge(charge);
+            coursePub.setValid(valid);
+            coursePub.setPrice(price);
+            coursePub.setPrice_old(price_old);
+            coursePub.setStartTime(startTime);
+            coursePub.setEndTime(endTime);
+
             map.put(courseId,coursePub);
         }
         return map;

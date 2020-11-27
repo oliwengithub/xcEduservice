@@ -1,21 +1,27 @@
 package com.xuecheng.auth.service;
 
 import com.alibaba.fastjson.JSON;
+import com.xuecheng.auth.dao.XcUserRepository;
+import com.xuecheng.auth.dao.XcUserRoleRepository;
 import com.xuecheng.framework.client.XcServiceList;
+import com.xuecheng.framework.domain.Constants;
+import com.xuecheng.framework.domain.ucenter.XcUser;
+import com.xuecheng.framework.domain.ucenter.XcUserRole;
 import com.xuecheng.framework.domain.ucenter.ext.AuthToken;
 import com.xuecheng.framework.domain.ucenter.response.AuthCode;
-import com.xuecheng.framework.domain.ucenter.response.JwtResult;
 import com.xuecheng.framework.domain.ucenter.response.UcenterCode;
 import com.xuecheng.framework.exception.ExceptionCast;
+import com.xuecheng.framework.model.response.CommonCode;
+import com.xuecheng.framework.model.response.ResponseResult;
+import com.xuecheng.framework.utils.BCryptUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.coyote.http2.Http2Error;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -23,6 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -31,6 +38,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -55,6 +63,12 @@ public class AuthService {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
+    XcUserRepository xcUserRepository;
+
+    @Autowired
+    XcUserRoleRepository xcUserRoleRepository;
+
     /**
      * 用户认证申请令牌，将令牌存储到redis
      * @author: olw
@@ -64,7 +78,7 @@ public class AuthService {
      * @param clientId
      * @param clientSecret
      * @returns: com.xuecheng.framework.domain.ucenter.ext.AuthToken
-    */
+     */
     public AuthToken login(String username, String password, String clientId, String clientSecret) {
 
         if (StringUtils.isEmpty(username)){
@@ -174,7 +188,7 @@ public class AuthService {
      * @param clientId
      * @param clientSecret
      * @returns: java.lang.String
-    */
+     */
     private String getHttpBasic(String clientId,String clientSecret){
         String string = clientId+":"+clientSecret;
         // 将串进行base64编码
@@ -189,7 +203,7 @@ public class AuthService {
      * @Date: 2020/10/19 17:31
      * @param access_token
      * @returns: com.xuecheng.framework.domain.ucenter.ext.AuthToken
-    */
+     */
     public AuthToken getUserToken (String access_token) {
 
         String tokenKey = "user_token:" +  access_token;
@@ -213,10 +227,66 @@ public class AuthService {
      * @Date: 2020/10/19 20:33
      * @param access_token
      * @returns: boolean
-    */
+     */
     public boolean delToken (String access_token) {
         String name = "user_token:" + access_token;
         stringRedisTemplate.delete(name);
         return true;
+    }
+
+
+    /**
+     * 用户注册
+     * @author: olw
+     * @Date: 2020/10/28 17:38
+     * @param xcUser
+     * @returns: com.xuecheng.framework.model.response.ResponseResult
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult register (XcUser xcUser) {
+        // 根据用户名查询用户是否已经存在
+        ResponseResult responseResult = this.checkUsername(xcUser.getUsername());
+        if (!responseResult.isSuccess()) {
+            return responseResult;
+        }
+
+        XcUser user = new XcUser();
+        //添加用户
+        BeanUtils.copyProperties(xcUser, user);
+        user.setCreateTime(new Date());
+        user.setPassword(BCryptUtil.encode(xcUser.getPassword()));
+        user.setUpdateTime(new Date());
+        // 101001学生 101002老师
+        // 103001正常 103002 停用 103003 注销
+        user.setStatus("103001");
+        XcUser save = xcUserRepository.save(user);
+        XcUserRole xcUserRole = new XcUserRole();
+        xcUserRole.setCreateTime(new Date());
+        xcUserRole.setUserId(user.getId());
+        // 角色类型
+        if (save.getUtype().equals("101001")){
+            xcUserRole.setCreator("学生");
+            xcUserRole.setRoleId(Constants.SYSTEM_ROLE_STUDENT);
+        }else if(save.getUtype().equals("101002")) {
+            xcUserRole.setCreator("老师");
+            xcUserRole.setRoleId(Constants.SYSTEM_ROLE_TEACHER);
+        }
+        xcUserRoleRepository.save(xcUserRole);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 检验用户名是否存在
+     * @author: olw
+     * @Date: 2020/10/28 18:02
+     * @param username
+     * @returns: com.xuecheng.framework.model.response.ResponseResult
+     */
+    public ResponseResult checkUsername (String username) {
+        XcUser user = xcUserRepository.findXcUserByUsername(username);
+        if (user != null){
+            return new ResponseResult(AuthCode.AUTH_USERNAME_EXIST);
+        }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 }

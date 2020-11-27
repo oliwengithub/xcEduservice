@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xuecheng.ucenter.dao.CompanyMapper">
+
+    <select id="findListPage" parameterType="com.xuecheng.framework.domain.ucenter.request.RequestCompanyList" resultType="com.xuecheng.framework.domain.ucenter.XcCompany">
+        SELECT * FROM xc_company
+        <where>
+            <if test="name != null and name != ''">
+                AND `name` LIKE  CONCAT(CONCAT('%', #{name}),'%')
+            </if>
+
+            <if test="linkname != null and linkname != ''">
+                AND `linkname` LIKE  CONCAT(CONCAT('%', #{linkname}),'%')
+            </if>
+            <if test="status != null and status != ''">
+                AND `status` = #{status}
+            </if>
+        </where>
+    </select>
+
+</mapper>

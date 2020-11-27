@@ -1,33 +1,87 @@
 package com.xuecheng.ucenter.service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.xuecheng.framework.domain.ucenter.XcCompany;
 import com.xuecheng.framework.domain.ucenter.XcUser;
+import com.xuecheng.framework.domain.ucenter.request.RequestCompanyList;
+import com.xuecheng.framework.domain.ucenter.response.CompanyCode;
+import com.xuecheng.framework.domain.ucenter.response.CompanyResult;
+import com.xuecheng.framework.exception.ExceptionCast;
+import com.xuecheng.framework.model.response.CommonCode;
+import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.QueryResult;
+import com.xuecheng.framework.model.response.ResponseResult;
+import com.xuecheng.ucenter.dao.CompanyMapper;
+import com.xuecheng.ucenter.dao.XcCompanyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Optional;
 
 /**
  *
  * @author: olw
  * @date: 2020/10/21 18:49
- * @description:  角色业务层
+ * @description:  机构业务层
  */
+@Service
 public class CompanyService {
 
+    @Resource
+    CompanyMapper companyMapper;
 
-    public QueryResult<XcCompany> findAll () {
+    @Autowired
+    XcCompanyRepository xcCompanyRepository;
 
-        return new QueryResult<>();
+    /**
+     * 查询机构列表
+     * @author: olw
+     * @Date: 2020/11/22 17:47
+     * @param requestCompanyList
+     * @returns: com.xuecheng.framework.model.response.QueryResponseResult
+    */
+    public QueryResponseResult findListPage (int page, int size, RequestCompanyList requestCompanyList) {
+
+        if (requestCompanyList == null) {
+            requestCompanyList = new RequestCompanyList();
+        }
+        page = page <=0 ? 1:page;
+        size = size <=0 ? 20:size;
+        PageHelper.startPage(page, size);
+        Page<XcCompany> listPage = companyMapper.findListPage(requestCompanyList);
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(listPage.getResult());
+        queryResult.setTotal(listPage.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
-    public boolean add (XcCompany xcCompany) {
-        return true;
+    public ResponseResult add (XcCompany xcCompany) {
+        XcCompany one = xcCompanyRepository.findXcCompaniesByName(xcCompany.getName());
+        if (one != null) {
+            ExceptionCast.cast(CompanyCode.COMPANY_NAME_EXIST);
+        }
+        xcCompanyRepository.save(xcCompany);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    public CompanyResult findById (String companyId) {
+        Optional<XcCompany> optional = xcCompanyRepository.findById(companyId);
+        if (optional.isPresent()) {
+            return new CompanyResult(CommonCode.SUCCESS, optional.get());
+        }
+        return new CompanyResult(CompanyCode.COMPANY_NOT_EXIST, null);
     }
 
 
-    public boolean del (String companyId) {
-        return true;
+    public ResponseResult update (XcCompany xcCompany) {
+        xcCompanyRepository.save(xcCompany);
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
-    public boolean update (XcCompany xcCompany) {
-        return true;
+    public List<XcCompany> findAll () {
+        return xcCompanyRepository.findAll();
     }
 }

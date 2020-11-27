@@ -18,6 +18,11 @@ public class UserListRequest extends RequestData {
     /**选择需要过滤的用户角色*/
     private String roleId;
 
+    /**选择需要过滤的用户类型*/
+    private String utype;
+
+    private String status;
+
     /**当前操作用户角色*/
     private String sysRoleId;
 }
