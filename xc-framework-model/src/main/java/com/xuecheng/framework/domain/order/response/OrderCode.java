@@ -36,15 +36,6 @@ public enum OrderCode implements ResultCode {
         this.code = code;
         this.message = message;
     }
-    private static final ImmutableMap<Integer, OrderCode> CACHE;
-
-    static {
-        final ImmutableMap.Builder<Integer, OrderCode> builder = ImmutableMap.builder();
-        for (OrderCode commonCode : values()) {
-            builder.put(commonCode.code(), commonCode);
-        }
-        CACHE = builder.build();
-    }
 
     @Override
     public boolean success() {

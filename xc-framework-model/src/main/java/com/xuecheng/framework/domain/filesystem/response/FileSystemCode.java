@@ -33,15 +33,6 @@ public enum FileSystemCode implements ResultCode {
         this.code = code;
         this.message = message;
     }
-    private static final ImmutableMap<Integer, FileSystemCode> CACHE;
-
-    static {
-        final ImmutableMap.Builder<Integer, FileSystemCode> builder = ImmutableMap.builder();
-        for (FileSystemCode commonCode : values()) {
-            builder.put(commonCode.code(), commonCode);
-        }
-        CACHE = builder.build();
-    }
 
     @Override
     public boolean success() {

@@ -29,15 +29,6 @@ public enum CompanyCode implements ResultCode {
         this.code = code;
         this.message = message;
     }
-    private static final ImmutableMap<Integer, CompanyCode> CACHE;
-
-    static {
-        final ImmutableMap.Builder<Integer, CompanyCode> builder = ImmutableMap.builder();
-        for (CompanyCode commonCode : values()) {
-            builder.put(commonCode.code(), commonCode);
-        }
-        CACHE = builder.build();
-    }
 
     @Override
     public boolean success() {

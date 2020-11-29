@@ -45,15 +45,6 @@ public enum MediaCode implements ResultCode {
         this.code = code;
         this.message = message;
     }
-    private static final ImmutableMap<Integer, MediaCode> CACHE;
-
-    static {
-        final ImmutableMap.Builder<Integer, MediaCode> builder = ImmutableMap.builder();
-        for (MediaCode commonCode : values()) {
-            builder.put(commonCode.code(), commonCode);
-        }
-        CACHE = builder.build();
-    }
 
     @Override
     public boolean success() {

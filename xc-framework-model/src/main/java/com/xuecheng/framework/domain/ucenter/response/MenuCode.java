@@ -33,15 +33,6 @@ public enum MenuCode implements ResultCode {
         this.code = code;
         this.message = message;
     }
-    private static final ImmutableMap<Integer, MenuCode> CACHE;
-
-    static {
-        final ImmutableMap.Builder<Integer, MenuCode> builder = ImmutableMap.builder();
-        for (MenuCode commonCode : values()) {
-            builder.put(commonCode.code(), commonCode);
-        }
-        CACHE = builder.build();
-    }
 
     @Override
     public boolean success() {

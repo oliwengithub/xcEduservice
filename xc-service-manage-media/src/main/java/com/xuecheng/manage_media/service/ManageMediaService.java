@@ -404,21 +404,26 @@ public class ManageMediaService {
             return false;
         }
         // 进行md5校验
-        FileInputStream mergeFileInputstream = null;
+        FileInputStream mergeFileIsstream = null;
         try {
-            mergeFileInputstream = new FileInputStream(mergeFile);
+            mergeFileIsstream = new FileInputStream(mergeFile);
             // 得到文件的md5
-            String mergeFileMd5 = DigestUtils.md5Hex(mergeFileInputstream);
-            // 比较md5
-            if(md5.equalsIgnoreCase(mergeFileMd5)){
-                return true;
+            // 进行多次加密 有一次成功就结束
+            int i = 0;
+            while (i < 3) {
+                String mergeFileMd5 = DigestUtils.md5Hex(mergeFileIsstream);
+                // 比较md5
+                if(md5.equalsIgnoreCase(mergeFileMd5)){
+                    return true;
+                }
+                i = i+1;
             }
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("checkFileMd5 error,file is:{},md5 is: {}",mergeFile.getAbsoluteFile(),md5);
         }finally{
             try {
-                mergeFileInputstream.close();
+                mergeFileIsstream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

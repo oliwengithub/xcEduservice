@@ -33,15 +33,6 @@ public enum UcenterCode implements ResultCode {
         this.code = code;
         this.message = message;
     }
-    private static final ImmutableMap<Integer, UcenterCode> CACHE;
-
-    static {
-        final ImmutableMap.Builder<Integer, UcenterCode> builder = ImmutableMap.builder();
-        for (UcenterCode commonCode : values()) {
-            builder.put(commonCode.code(), commonCode);
-        }
-        CACHE = builder.build();
-    }
 
     @Override
     public boolean success() {

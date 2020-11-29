@@ -37,15 +37,6 @@ public enum AuthCode implements ResultCode {
         this.code = code;
         this.message = message;
     }
-    private static final ImmutableMap<Integer, AuthCode> CACHE;
-
-    static {
-        final ImmutableMap.Builder<Integer, AuthCode> builder = ImmutableMap.builder();
-        for (AuthCode commonCode : values()) {
-            builder.put(commonCode.code(), commonCode);
-        }
-        CACHE = builder.build();
-    }
 
     @Override
     public boolean success() {

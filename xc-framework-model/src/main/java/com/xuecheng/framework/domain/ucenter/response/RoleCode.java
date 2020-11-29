@@ -29,15 +29,6 @@ public enum RoleCode implements ResultCode {
         this.code = code;
         this.message = message;
     }
-    private static final ImmutableMap<Integer, RoleCode> CACHE;
-
-    static {
-        final ImmutableMap.Builder<Integer, RoleCode> builder = ImmutableMap.builder();
-        for (RoleCode commonCode : values()) {
-            builder.put(commonCode.code(), commonCode);
-        }
-        CACHE = builder.build();
-    }
 
     @Override
     public boolean success() {

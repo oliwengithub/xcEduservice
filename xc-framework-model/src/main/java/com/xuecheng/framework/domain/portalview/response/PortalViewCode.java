@@ -26,16 +26,6 @@ public enum PortalViewCode implements ResultCode {
         this.code = code;
         this.message = message;
     }
-    private static final ImmutableMap<Integer, PortalViewCode> CACHE;
-
-    static {
-        final ImmutableMap.Builder<Integer, PortalViewCode> builder = ImmutableMap.builder();
-        for (PortalViewCode commonCode : values()) {
-            builder.put(commonCode.code(), commonCode);
-        }
-        CACHE = builder.build();
-    }
-
     @Override
     public boolean success() {
         return success;
