@@ -3,8 +3,8 @@
 <mapper namespace="com.xuecheng.ucenter.dao.XcUserMapper">
 
     <select id="findUserListPage" parameterType="com.xuecheng.framework.domain.ucenter.request.UserListRequest" resultType="com.xuecheng.framework.domain.ucenter.ext.UserInfo">
-        SELECT u.id, u.username, u.salt, u.`name`, u.utype, u.birthday, u.userpic, u.email,u.sex,u.phone,u.`status`,
-            u.create_time createTime, u.update_time updateTime, r.role_name roleName,c.`name` as companyName
+        SELECT DISTINCT u.id, u.username, u.salt, u.`name`, u.utype, u.birthday, u.userpic, u.email,u.sex,u.phone,u.`status`,
+            u.create_time createTime, u.update_time updateTime, c.`name` as companyName
         FROM xc_user u
             LEFT JOIN xc_user_role ur ON u.id = ur.user_id
             LEFT JOIN xc_role r ON r.id = ur.role_id
@@ -31,8 +31,9 @@
                 AND u.utype = #{utype}
             </if>
 
-
         </where>
+        ORDER BY u.create_time DESC
+
     </select>
 
 </mapper>

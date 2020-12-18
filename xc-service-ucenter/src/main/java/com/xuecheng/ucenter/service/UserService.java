@@ -46,6 +46,9 @@ public class UserService {
     private XcUserRepository xcUserRepository;
 
     @Autowired
+    private XcTeacherRepository xcTeacherRepository;
+
+    @Autowired
     private XcUserRoleRepository xcUserRoleRepository;
 
     @Autowired
@@ -95,6 +98,10 @@ public class UserService {
 
         return xcUserExt;
 
+    }
+
+    public XcUser getUser (String userId) {
+        return xcUserRepository.findById(userId).orElse(null);
     }
 
     /**
@@ -187,6 +194,14 @@ public class UserService {
             xcCompanyUser.setCompanyId(companyId);
             xcCompanyUser.setUserId(user.getId());
             xcCompanyUserRepository.save(xcCompanyUser);
+            // 添加老师简介信息
+            XcTeacher xcTeacher = new XcTeacher();
+            // 默认为用户名
+            xcTeacher.setName(user.getName());
+            xcTeacher.setPic(user.getUserpic());
+            xcTeacher.setUserId(user.getId());
+            xcTeacherRepository.save(xcTeacher);
+
         }
         return new ResponseResult(CommonCode.SUCCESS);
     }
@@ -341,4 +356,39 @@ public class UserService {
         xcUserRepository.save(user);
         return new ResponseResult(CommonCode.SUCCESS);
     }
+
+    /**
+     * 根据id
+     * @author: olw
+     * @Date: 2020/12/9 17:26
+     * @param id
+     * @returns: com.xuecheng.framework.domain.ucenter.XcTeacher
+    */
+    public XcTeacher getTeacherInfo (String id) {
+        XcTeacher xcTeacher = new XcTeacher();
+        Optional<XcTeacher> optional = xcTeacherRepository.findById(id);
+        xcTeacher = optional.orElseGet(() -> xcTeacherRepository.findByUserId(id));
+        return xcTeacher;
+    }
+
+    /**
+     * 更新老师信息
+     * @author: olw
+     * @Date: 2020/12/9 17:33
+     * @param xcTeacher
+     * @returns: com.xuecheng.framework.model.response.ResponseResult
+    */
+    public ResponseResult updateTeacherInfo (XcTeacher xcTeacher) {
+        String userId = xcTeacher.getUserId();
+        if (StringUtils.isEmpty(userId)) {
+            return new ResponseResult(CommonCode.FAIL);
+        }
+        XcTeacher one = xcTeacherRepository.findByUserId(userId);
+        if (one != null) {
+            xcTeacher.setId(one.getId());
+        }
+        xcTeacherRepository.save(xcTeacher);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
 }

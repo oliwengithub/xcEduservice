@@ -1,6 +1,7 @@
 package com.xuecheng.auth.service;
 
 import com.alibaba.fastjson.JSON;
+import com.xuecheng.auth.client.UserClient;
 import com.xuecheng.auth.dao.XcUserRepository;
 import com.xuecheng.auth.dao.XcUserRoleRepository;
 import com.xuecheng.framework.client.XcServiceList;
@@ -10,6 +11,7 @@ import com.xuecheng.framework.domain.ucenter.XcUserRole;
 import com.xuecheng.framework.domain.ucenter.ext.AuthToken;
 import com.xuecheng.framework.domain.ucenter.response.AuthCode;
 import com.xuecheng.framework.domain.ucenter.response.UcenterCode;
+import com.xuecheng.framework.domain.ucenter.response.UserBase;
 import com.xuecheng.framework.exception.ExceptionCast;
 import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.ResponseResult;
@@ -38,8 +40,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -68,6 +69,9 @@ public class AuthService {
 
     @Autowired
     XcUserRoleRepository xcUserRoleRepository;
+
+    @Autowired
+    UserClient userClient;
 
     /**
      * 用户认证申请令牌，将令牌存储到redis
@@ -288,5 +292,25 @@ public class AuthService {
             return new ResponseResult(AuthCode.AUTH_USERNAME_EXIST);
         }
         return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 获取用户基本信息
+     * @author: olw
+     * @Date: 2020/12/13 20:24
+     * @param userIds
+     * @returns: com.xuecheng.framework.domain.ucenter.response.UserBase
+    */
+    public  Map<String, UserBase> getUserBase (String[] userIds) {
+        List<String> list = Arrays.asList(userIds);
+        Map<String, UserBase> userBaseMap = new HashMap<>(list.size());
+        list.forEach(e->{
+            XcUser user = userClient.getUser(e);
+            UserBase userBase = new UserBase();
+            BeanUtils.copyProperties(user, userBase);
+
+            userBaseMap.put(e, userBase);
+        });
+        return userBaseMap;
     }
 }

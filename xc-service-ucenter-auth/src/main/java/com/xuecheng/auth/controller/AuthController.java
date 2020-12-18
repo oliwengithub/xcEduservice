@@ -9,6 +9,7 @@ import com.xuecheng.framework.domain.ucenter.request.LoginRequest;
 import com.xuecheng.framework.domain.ucenter.response.AuthCode;
 import com.xuecheng.framework.domain.ucenter.response.JwtResult;
 import com.xuecheng.framework.domain.ucenter.response.LoginResult;
+import com.xuecheng.framework.domain.ucenter.response.UserBase;
 import com.xuecheng.framework.exception.ExceptionCast;
 import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.ResponseResult;
@@ -91,6 +92,17 @@ public class AuthController implements AuthControllerApi, UserRegisterController
             new JwtResult(CommonCode.FAIL, null);
         }
         return new JwtResult(CommonCode.SUCCESS, authToken.getJwt_token());
+    }
+
+    @Override
+    @GetMapping("/getuserbase/{userIds}")
+    public Map<String, UserBase> getUserBase (@PathVariable("userIds") String userIds) {
+        // 方便接口扩展 将参数修改成id数组
+        if (StringUtils.isEmpty(userIds)) {
+            ExceptionCast.cast(CommonCode.INVALID_PARAM);
+        }
+        String[] userIdsString = userIds.split(",");
+        return authService.getUserBase(userIdsString);
     }
 
     @Override

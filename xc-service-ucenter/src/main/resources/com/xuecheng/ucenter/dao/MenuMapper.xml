@@ -45,6 +45,9 @@
             <if test="menuName != null and menuName != ''">
                 AND mu.menu_name LIKE CONCAT(CONCAT('%', #{menuName}),'%')
             </if>
+            <if test="parentMenuName != null and parentMenuName != ''">
+                AND mu.p_id IN (select id from xc_menu where menu_name LIKE CONCAT(CONCAT('%', #{parentMenuName}),'%'))
+            </if>
             AND mu.status = '1'
         </where>
 

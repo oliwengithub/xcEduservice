@@ -8,6 +8,7 @@ import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.ucenter.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,35 +20,34 @@ public class CompanyController implements CompanyControllerApi {
     @Autowired
     CompanyService companyService;
 
-    //@PreAuthorize("hasAuthority('find_all_company')")
+    @PreAuthorize("hasAuthority('xc_sysmanager_company')")
     @Override
     @GetMapping("/list/{page}/{size}")
     public QueryResponseResult findAllCompany (@PathVariable("page") int page, @PathVariable("size") int size, RequestCompanyList requestCompanyList) {
         return companyService.findListPage(page, size, requestCompanyList);
     }
 
-    //@PreAuthorize("hasAuthority('add_company')")
+    @PreAuthorize("hasAuthority('xc_sysmanager_company_add')")
     @Override
     @PostMapping("/add")
     public ResponseResult add (@RequestBody XcCompany xcCompany) {
         return companyService.add(xcCompany);
     }
 
-    //@PreAuthorize("hasAuthority('get_company_info')")
     @Override
     @GetMapping("/get/{companyId}")
     public CompanyResult getCompanyInfo (@PathVariable("companyId") String companyId) {
         return companyService.findById(companyId);
     }
 
-    //@PreAuthorize("hasAuthority('eidt_company')")
+    @PreAuthorize("hasAuthority('xc_sysmanager_company_edit')")
     @Override
     @PutMapping("/edit")
     public ResponseResult edit (@RequestBody XcCompany xcCompany) {
         return companyService.update(xcCompany);
     }
 
-    //@PreAuthorize("hasAuthority('get_all')")
+    @PreAuthorize("hasAuthority('xc_sysmanager_company')")
     @Override
     @GetMapping("/getall")
     public List<XcCompany> findAll () {
