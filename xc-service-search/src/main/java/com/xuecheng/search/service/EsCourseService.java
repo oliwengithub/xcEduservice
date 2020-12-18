@@ -20,6 +20,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,7 @@ public class EsCourseService {
     private String media_source_field;
 
     @Autowired
+    @Qualifier("restHighLevelClient")
     RestHighLevelClient restHighLevelClient;
 
     //课程搜索
@@ -138,7 +140,8 @@ public class EsCourseService {
                 Float price = 0f;
                 try {
                     if(sourceAsMap.get("price")!=null ){
-                        price = (Float) sourceAsMap.get("price");
+
+                        price = new Double((sourceAsMap.get("price").toString())).floatValue();
                     }
 
                 } catch (Exception e) {
@@ -149,12 +152,15 @@ public class EsCourseService {
                 Float price_old = 0f;
                 try {
                     if(sourceAsMap.get("price_old")!=null ){
-                        price_old = (Float) sourceAsMap.get("price_old");
+                        price_old = new Double(sourceAsMap.get("price_old").toString()).floatValue();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 coursePub.setPrice_old(price_old);
+                // 获取课程收费规则
+                String charge = sourceAsMap.get("charge").toString();
+                coursePub.setCharge(charge);
                 //将coursePub对象放入list
                 list.add(coursePub);
             }
