@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -72,7 +73,7 @@ public class PageService {
     @Autowired
     GridFsTemplate gridFsTemplate;
 
-    @Autowired
+    @Resource
     GridFSBucket gridFSBucket;
 
     @Autowired
@@ -363,7 +364,7 @@ public class PageService {
         //发送给mq
         //站点id
         String siteId = cmsPage.getSiteId();
-        rabbitTemplate.convertAndSend(RabbitmqConfig.EX_ROUTING_CMS_POSTPAGE,siteId,jsonString);
+        rabbitTemplate.convertAndSend(RabbitmqConfig.EX_ROUTING_CMS_POST_PAGE, siteId, jsonString);
     }
     //保存html到GridFS
     private CmsPage saveHtml(String pageId,String htmlContent){

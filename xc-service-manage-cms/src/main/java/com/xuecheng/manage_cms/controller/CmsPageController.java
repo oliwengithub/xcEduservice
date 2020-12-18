@@ -65,7 +65,13 @@ public class CmsPageController implements CmsPageControllerApi {
         return pageService.save(cmsPage);
     }
 
-    //一键发布页面
+    /**
+     *  一键发布页面
+     * @author: olw
+     * @Date: 2020/12/6 11:30
+     * @param cmsPage
+     * @returns:
+    */
     @Override
     @PostMapping("/postPageQuick")
     public CmsPostPageResult postPageQuick(@RequestBody CmsPage cmsPage){

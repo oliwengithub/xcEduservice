@@ -2,10 +2,12 @@ package com.xuecheng.manage_cms_client.mq;
 
 import com.alibaba.fastjson.JSON;
 import com.xuecheng.framework.domain.cms.CmsPage;
+import com.xuecheng.manage_cms_client.config.RabbitmqConfig;
 import com.xuecheng.manage_cms_client.service.PageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.connection.RabbitConnectionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +24,14 @@ public class ConsumerPostPage {
     @Autowired
     PageService pageService;
 
-    //监听执行下载
-    @RabbitListener(queues = {"${xuecheng.mq.queue01}","${xuecheng.mq.queue02}"})
+    /**
+     * 页面发布
+     * @author: olw
+     * @Date: 2020/12/9 15:41
+     * @param msg
+     * @returns: void
+    */
+    @RabbitListener(queues = {RabbitmqConfig.QUEUE_CMS_POST_PAGE, RabbitmqConfig.QUEUE_CMS_PAGE_COURSE})
     public void postPage(String msg){
         //解析消息
         Map map = JSON.parseObject(msg, Map.class);
@@ -33,4 +41,5 @@ public class ConsumerPostPage {
         pageService.savePageToServerPath(pageId);
 
     }
+
 }
