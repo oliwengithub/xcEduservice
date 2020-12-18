@@ -56,13 +56,13 @@ public class AddChooseCourse {
             String courseId = (String) map.get("courseId");
             String valid = (String) map.get("valid");
             String courseName = (String) map.get("courseName");
-            String teachpalnId = (String) map.get("teachpalnId");
-            String teachpalnName = (String) map.get("teachpalnName");
+            String teachplanId = (String) map.get("teachplanId");
+            String teachplanName = (String) map.get("teachplanName");
             Integer teachpalnNum = (Integer) map.get("teachpalnNum");
 
             Date startTime = null;
             Date endTime = null;
-            SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY‐MM‐dd HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy‐MM‐dd HH:mm:ss");
             if(map.get("startTime")!=null){
                 startTime =dateFormat.parse((String) map.get("startTime"));
             }
@@ -70,7 +70,7 @@ public class AddChooseCourse {
                 endTime =dateFormat.parse((String) map.get("endTime"));
             }
             // 添加选课
-            ResponseResult addCourse = learningService.addCourse(courseName, teachpalnNum, teachpalnId, teachpalnName, userId, courseId, valid, startTime, endTime, xcTask);
+            ResponseResult addCourse = learningService.addCourse(courseName, teachpalnNum, teachplanId, teachplanName, userId, courseId, valid, startTime, endTime, xcTask);
             // 选课成功发送响应消息
             if(addCourse.isSuccess()){
                 // 向mq发送选课消息

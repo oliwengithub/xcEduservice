@@ -1,7 +1,10 @@
 package com.xuecheng.learning;
 
 import com.netflix.discovery.converters.Auto;
+import com.xuecheng.framework.domain.course.CoursePub;
 import com.xuecheng.framework.domain.course.TeachplanMediaPub;
+import com.xuecheng.framework.domain.search.CourseSearchParam;
+import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.utils.MD5Util;
 import com.xuecheng.learning.client.CourseSearchClient;
 import org.junit.Test;
@@ -20,8 +23,12 @@ public class TestClient {
 
     @Test
     public void testClient () {
-        String teachplanIds = "402885816347f814016348d7153c0002,4028e58161bd3b380161bd40cf340009,";
+        /*String teachplanIds = "402885816347f814016348d7153c0002,4028e58161bd3b380161bd40cf340009,";
         TeachplanMediaPub media = courseSearchClient.getMedia(teachplanIds);
-        System.out.println(media);
+        System.out.println(media);*/
+
+
+        QueryResponseResult<CoursePub> list = courseSearchClient.list(1, 1);
+        System.out.println(list);
     }
 }

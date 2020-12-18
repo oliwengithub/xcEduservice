@@ -1,6 +1,7 @@
 package com.xuecheng.framework.model.response;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * @Modified By:
  */
 @Data
+@NoArgsConstructor
 @ToString
 public class QueryResult<T> {
     //数据列表

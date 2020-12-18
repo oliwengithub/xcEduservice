@@ -5,7 +5,7 @@ spring:
     name: xc-service-manage-course
   datasource:
     druid:
-      url: jdbc:mysql://localhost:3306/xc_course?characterEncoding=utf-8
+      url: jdbc:mysql://localhost:3306/xc_course?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
       username: root
       password: 123456
       driverClassName: com.mysql.jdbc.Driver
@@ -45,4 +45,4 @@ course‐publish:
   previewUrl: http://www.xuecheng.com/cms/preview/ #预览url
   pageWebPath: /course/detail/
   pagePhysicalPath: /course/detail/
-  dataUrlPre: http://localhost:31200/course/courseview/
+  dataUrlPre: http://XC-SERVICE-MANAGE-COURSE/course/courseview/

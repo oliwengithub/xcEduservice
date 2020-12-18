@@ -146,7 +146,7 @@ public class LearningService {
      * @returns: com.xuecheng.framework.model.response.ResponseResult
      */
     @Transactional(rollbackFor = Exception.class)
-    public ResponseResult addCourse (String courseName, int teachpalnNum, String teachpalnId, String teachpalnName, String userId, String courseId, String valid, Date startTime, Date endTime, XcTask xcTask) {
+    public ResponseResult addCourse (String courseName, int teachpalnNum, String teachplanId, String teachplanName, String userId, String courseId, String valid, Date startTime, Date endTime, XcTask xcTask) {
         if (StringUtils.isEmpty(courseId)) {
             ExceptionCast.cast(LearningCode.LEARNING_GETMEDIA_ERROR);
         }
@@ -170,10 +170,12 @@ public class LearningService {
         xcLearningCourse.setEndTime(endTime);
         xcLearningCourse.setCourseName(courseName);
         xcLearningCourse.setTeachpalnNum(teachpalnNum);
-        xcLearningCourse.setTeachplanId(teachpalnId);
-        xcLearningCourse.setTeachplanName(teachpalnName);
+        xcLearningCourse.setTeachplanId(teachplanId);
+        xcLearningCourse.setTeachplanName(teachplanName);
         // 选课状态 501001正常 501002结束 501003取消 501004未选课
         xcLearningCourse.setStatus("501001");
+        // 设置初始化进度
+        xcLearningCourse.setCompletePercent(new BigDecimal("0.00"));
         xcLearningCourseRepository.save(xcLearningCourse);
         // 向历史任务表插入记录
         Optional<XcTaskHis> optional = xcTaskHisRepository.findById(xcTask.getId());
@@ -187,7 +189,21 @@ public class LearningService {
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
+    /**
+     * 免费课程选课业务
+     * @author: olw
+     * @Date: 2020/12/18 20:36
+     * @param courseId
+     * @param userId
+     * @returns: com.xuecheng.framework.model.response.ResponseResult
+    */
     public ResponseResult addOpenCourse (String courseId, String userId) {
+        // 检验是否已经选课
+        XcLearningCourse learningCourse = xcLearningCourseRepository.findByUserIdAndCourseId(userId, courseId);
+        if (learningCourse != null) {
+            // 不为空表示已经选课
+            return new ResponseResult(CommonCode.SUCCESS);
+        }
         // 获取课程相关信息
         CourseMarket courseMarket = courseClient.getCourseMarketById(courseId);
         // 课程对应的收费规则

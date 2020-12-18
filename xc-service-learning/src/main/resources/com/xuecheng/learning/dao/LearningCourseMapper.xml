@@ -7,7 +7,7 @@
             teachplan_name teachplanName, teachpaln_num teachpalnNum, valid,
             start_time startTime, end_time endTime, `status`, complete_percent completePercent, update_time updateTime
         FROM xc_learning_course
-        WHERE user_id = #{userId} ORDER BY updateTime
+        WHERE user_id = #{userId} ORDER BY updateTime DESC
     </select>
 
 </mapper>

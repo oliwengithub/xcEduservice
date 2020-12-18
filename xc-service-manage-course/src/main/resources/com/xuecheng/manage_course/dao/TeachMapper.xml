@@ -13,6 +13,7 @@
                 <result column="three_pname" property="pname"></result>
                 <result column="media_fileoriginalname" property="mediaFileOriginalName"></result>
                 <result column="media_id" property="mediaId"></result>
+                <result column="timelength" property="timelength"></result>
             </collection>
         </collection>
     </resultMap>
@@ -24,6 +25,7 @@
             b.pname two_pname,
             c.id three_id,
             c.pname three_pname,
+            c.timelength,
             tm.media_fileoriginalname,
             tm.media_id
         FROM teachplan a

@@ -92,7 +92,8 @@ public class MediaProcessTask {
         }
 
         // 生成m3u8
-        video_path = serverPath + mediaFile.getFilePath()+mp4_name;//此地址为mp4的地址
+        //此地址为mp4的地址
+        video_path = serverPath + mediaFile.getFilePath()+mp4_name;
         String m3u8_name = mediaFile.getFileId()+".m3u8";
         String m3u8folder_path = serverPath + mediaFile.getFilePath()+"hls/";
         HlsVideoUtil hlsVideoUtil = new

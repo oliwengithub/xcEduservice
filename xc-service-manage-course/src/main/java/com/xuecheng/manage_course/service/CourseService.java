@@ -12,25 +12,28 @@ import com.xuecheng.framework.domain.course.ext.TeachplanNode;
 import com.xuecheng.framework.domain.course.request.CourseListRequest;
 import com.xuecheng.framework.domain.course.response.AddCourseResult;
 import com.xuecheng.framework.domain.course.response.CourseCode;
+import com.xuecheng.framework.domain.ucenter.XcTeacher;
 import com.xuecheng.framework.exception.ExceptionCast;
 import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.QueryResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.manage_course.client.CmsPageClient;
+import com.xuecheng.manage_course.client.UserClient;
+import com.xuecheng.manage_course.config.RabbitmqConfig;
 import com.xuecheng.manage_course.dao.*;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CourseService {
@@ -48,10 +51,10 @@ public class CourseService {
     @Value("${course‐publish.previewUrl}")
     private String previewUrl;
 
-    @Autowired
+    @Resource
     TeachMapper teachMapper;
 
-    @Autowired
+    @Resource
     CourseMapper courseMapper;
 
     @Autowired
@@ -77,6 +80,12 @@ public class CourseService {
 
     @Autowired
     TeachplanMediaPubRepository teachplanMediaPubRepository;
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    UserClient userClient;
 
 
     //查询课程计划
@@ -186,11 +195,7 @@ public class CourseService {
 
     //根据课程id获取基本信息
     public CourseBase getCoursebaseById (String courseId) {
-        Optional<CourseBase> optional = courseBaseRepository.findById(courseId);
-        if (optional.isPresent()) {
-            return optional.get();
-        }
-        return null;
+        return courseBaseRepository.findById(courseId).orElse(null);
     }
 
     //更新课程信息
@@ -292,12 +297,13 @@ public class CourseService {
 
     //查询课程视图 包括基本信息 营销 图片 课程计划
     public CourseView getCourseView (String id) {
-
+        String userId = "";
         CourseView courseView = new CourseView();
         //基本信息
         Optional<CourseBase> baseOptional = courseBaseRepository.findById(id);
         if (baseOptional.isPresent()) {
             CourseBase courseBase = baseOptional.get();
+            userId = courseBase.getUserId();
             courseView.setCourseBase(courseBase);
         }
         //营销
@@ -317,6 +323,11 @@ public class CourseService {
         if (teachplanNode != null && teachplanNode.getChildren() != null && teachplanNode.getChildren().size() > 0) {
             courseView.setTeachplanNode(teachplanNode);
         }
+        // 课程老师
+       if(StringUtils.isNotEmpty(userId)) {
+           XcTeacher x = userClient.getTeacherInfo(userId);
+           courseView.setTeacher(x);
+       }
         return courseView;
     }
 
@@ -355,8 +366,14 @@ public class CourseService {
         return new CoursePreviewResult(CommonCode.SUCCESS, pageUrl);
     }
 
-    //一键发布页面
-    @Transactional
+    /**
+     * 一键发布页面
+     * @author: olw
+     * @Date: 2020/12/1 19:59
+     * @param id
+     * @returns: com.xuecheng.framework.domain.cms.response.CoursePublishResult
+    */
+    @Transactional(rollbackFor = Exception.class)
     public CoursePublishResult publish (String id) {
         //课程信息
         CourseBase one = this.findCourseBaseById(id);
@@ -382,6 +399,16 @@ public class CourseService {
         // 向数据库保存课程媒资关联索引信息
         saveTeachplanMediaPub(id);
         //课程缓存...
+        // 创建课程相关数据信息
+
+        Map<String, Object> map = new HashMap(){{
+            put("courseId", coursePub.getId());
+            put("teachplan", coursePub.getTeachplan());
+            put("name", coursePub.getName());
+        }};
+        String jsonString = JSON.toJSONString(map);
+        // 发送课程发布消息， 更新选课信息
+        rabbitTemplate.convertAndSend(RabbitmqConfig.EX_LEARNING_SCHEDULE, RabbitmqConfig.XC_LEARNING_SCHEDULE_KEY, jsonString);
         //页面url
         String pageUrl = cmsPostPageResult.getPageUrl();
         return new CoursePublishResult(CommonCode.SUCCESS, pageUrl);
@@ -417,13 +444,20 @@ public class CourseService {
         return save;
     }
 
-    //发布课程正式页面
+    /**
+     * 发布课程正式页面
+     * @author: olw
+     * @Date: 2020/12/9 16:17
+     * @param courseId
+     * @returns: com.xuecheng.framework.domain.cms.response.CmsPostPageResult
+    */
     public CmsPostPageResult publish_page (String courseId) {
         CourseBase one = this.findCourseBaseById(courseId);
         //发布课程预览页面
         CmsPage cmsPage = new CmsPage();
         //站点
-        cmsPage.setSiteId(publish_siteId);//课程预览站点
+        //课程预览站点
+        cmsPage.setSiteId(publish_siteId);
         //模板
         cmsPage.setTemplateId(publish_templateId);
         //页面名称
@@ -436,6 +470,7 @@ public class CourseService {
         cmsPage.setPagePhysicalPath(publish_page_physicalpath);
         //数据url
         cmsPage.setDataUrl(publish_dataUrlPre + courseId);
+
         //发布页面
         CmsPostPageResult cmsPostPageResult = cmsPageClient.postPageQuick(cmsPage);
         return cmsPostPageResult;
@@ -550,5 +585,17 @@ public class CourseService {
         one.setMediaUrl(teachplanMedia.getMediaUrl());
         teachplanMediaRepository.save(one);
         return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 根据课程id和课程计划id获取课程计划
+     * @author: olw
+     * @Date: 2020/11/30 20:40
+     * @param teachplanId
+     * @returns: com.xuecheng.framework.domain.course.Teachplan
+    */
+    public Teachplan getCourseTeachplan (String teachplanId) {
+         return teachplanRepository.findById(teachplanId).orElse(null);
+
     }
 }

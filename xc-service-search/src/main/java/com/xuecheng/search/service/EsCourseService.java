@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.From;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,11 +65,17 @@ public class EsCourseService {
         SearchRequest searchRequest = new SearchRequest(course_index);
         //设置搜索类型
         searchRequest.types(course_type);
-
+        // 构建查询对象
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+
+        page = page <= 1 ? 0:page;
+        size = size <= 0 ? 20:size;
+        int from = page * size;
+        // 设置分页参数
+        searchSourceBuilder.from(from).size(size);
         //过虑源字段
-        String[] source_field_array = course_source_field.split(",");
-        searchSourceBuilder.fetchSource(source_field_array,new String[]{});
+        String[] sourceFieldArray = course_source_field.split(",");
+        searchSourceBuilder.fetchSource(sourceFieldArray,new String[]{});
         //创建布尔查询对象
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         //搜索条件
@@ -137,7 +144,7 @@ public class EsCourseService {
                 String pic = (String) sourceAsMap.get("pic");
                 coursePub.setPic(pic);
                 //价格
-                Float price = 0f;
+                float price = 0f;
                 try {
                     if(sourceAsMap.get("price")!=null ){
 
@@ -149,18 +156,21 @@ public class EsCourseService {
                 }
                 coursePub.setPrice(price);
                 //旧价格
-                Float price_old = 0f;
+                float priceOld = 0f;
                 try {
                     if(sourceAsMap.get("price_old")!=null ){
-                        price_old = new Double(sourceAsMap.get("price_old").toString()).floatValue();
+                        priceOld = new Double(sourceAsMap.get("price_old").toString()).floatValue();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                coursePub.setPrice_old(price_old);
+                coursePub.setPrice_old(priceOld);
                 // 获取课程收费规则
                 String charge = sourceAsMap.get("charge").toString();
                 coursePub.setCharge(charge);
+                // 取出课程计划
+                String teachplan = (String) sourceAsMap.get("teachplan");
+                coursePub.setTeachplan(teachplan);
                 //将coursePub对象放入list
                 list.add(coursePub);
             }
@@ -215,8 +225,26 @@ public class EsCourseService {
             String pic = (String) sourceAsMap.get("pic");
             String description = (String) sourceAsMap.get("description");
             String teachplan = (String) sourceAsMap.get("teachplan");
-            Float price = new Double((double) sourceAsMap.get("price")).floatValue();
-            Float price_old = new Double((double) sourceAsMap.get("price_old")).floatValue();
+            //价格
+            float price = 0f;
+            try {
+                if(sourceAsMap.get("price")!=null ){
+
+                    price = new Double((sourceAsMap.get("price").toString())).floatValue();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //旧价格
+            float priceOld = 0f;
+            try {
+                if(sourceAsMap.get("price_old")!=null ){
+                    priceOld = new Double(sourceAsMap.get("price_old").toString()).floatValue();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             String valid = (String) sourceAsMap.get("valid");
             String startTime = (String) sourceAsMap.get("start_time");
             String endTime = (String) sourceAsMap.get("end_time");
@@ -231,7 +259,7 @@ public class EsCourseService {
             coursePub.setCharge(charge);
             coursePub.setValid(valid);
             coursePub.setPrice(price);
-            coursePub.setPrice_old(price_old);
+            coursePub.setPrice_old(priceOld);
             coursePub.setStartTime(startTime);
             coursePub.setEndTime(endTime);
 

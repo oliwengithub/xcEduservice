@@ -10,6 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
  * @version 1.0
  * @create 2018-07-14 11:11
  **/
+@EnableScheduling
 @EnableFeignClients
 @EnableDiscoveryClient
 @SpringBootApplication
