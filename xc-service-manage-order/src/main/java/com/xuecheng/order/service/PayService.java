@@ -21,6 +21,7 @@ import com.xuecheng.order.config.RabbitMQConfig;
 import com.xuecheng.order.dao.*;
 import com.xuecheng.order.pay.wechat.Config;
 import com.xuecheng.order.pay.wechat.VerifyUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,7 +119,7 @@ public class PayService {
     }
 
     /**
-     * 查新订单支付转态
+     * 查新订单支付状态
      * @author: olw
      * @Date: 2020/11/10 21:25
      * @param orderNumber
@@ -296,11 +297,20 @@ public class PayService {
         TeachplanNode teachplanNode = JSON.parseObject(teachplan, TeachplanNode.class);
         List<TeachplanNode> children = teachplanNode.getChildren();
         int count = 0;
+        String teachplanId = "";
+        String teachplanName = "";
         for (TeachplanNode child : children) {
             int size = child.getChildren().size();
             count = count + size;
+            if(StringUtils.isEmpty(teachplanId)) {
+                // 课程计划为二维集合 获取每一层叶子节点的第一个
+                teachplanId = child.getChildren().get(0).getId();
+                teachplanName = child.getChildren().get(0).getPname();
+            }
         }
         map.put("teachpalnNum", count);
+        map.put("teachplanId", teachplanId);
+        map.put("teachplanName", teachplanName);
 
         String jsonString = JSON.toJSONString(map);
         return jsonString;

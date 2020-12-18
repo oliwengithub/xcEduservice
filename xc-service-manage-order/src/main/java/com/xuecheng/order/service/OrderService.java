@@ -36,10 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  *
@@ -145,6 +142,7 @@ public class OrderService {
 
         orders.setOrderNumber(generate);
         orders.setUserId(userId);
+        orders.setCreateTime(new Date());
         // 定价 相当于课程的原价
         orders.setInitialPrice(coursePub.getPrice_old());
         orders.setPrice(coursePub.getPrice());

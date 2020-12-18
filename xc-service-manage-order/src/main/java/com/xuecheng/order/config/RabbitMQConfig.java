@@ -44,11 +44,11 @@ public class RabbitMQConfig {
      * @Date: 2020/10/24 14:22
      * @returns: org.springframework.amqp.core.Queue
     */
-    @Bean(XC_LEARNING_ADDCHOOSECOURSE)
-    public Queue QUEUE_DECLARE_ADD() {
-        Queue queue = new Queue(XC_LEARNING_ADDCHOOSECOURSE,true,false,true);
-        return queue;
-    }
+//    @Bean(XC_LEARNING_ADDCHOOSECOURSE)
+//    public Queue QUEUE_DECLARE_ADD() {
+//        Queue queue = new Queue(XC_LEARNING_ADDCHOOSECOURSE,true,false,true);
+//        return queue;
+//    }
 
     /**
      * 声明队列 （完成选课队列）
@@ -68,10 +68,10 @@ public class RabbitMQConfig {
      * @param exchange the exchange
      * @return the binding
      */
-    @Bean
-    public Binding binding_queue_media_processtask_ADD(@Qualifier(XC_LEARNING_ADDCHOOSECOURSE) Queue queue, @Qualifier(EX_LEARNING_ADDCHOOSECOURSE) Exchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(XC_LEARNING_ADDCHOOSECOURSE_KEY).noargs();
-    }
+//    @Bean
+//    public Binding binding_queue_media_processtask_ADD(@Qualifier(XC_LEARNING_ADDCHOOSECOURSE) Queue queue, @Qualifier(EX_LEARNING_ADDCHOOSECOURSE) Exchange exchange) {
+//        return BindingBuilder.bind(queue).to(exchange).with(XC_LEARNING_ADDCHOOSECOURSE_KEY).noargs();
+//    }
 
     /**
      * 绑定队列到交换机 (完成选课)
