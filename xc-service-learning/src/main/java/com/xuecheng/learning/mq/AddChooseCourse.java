@@ -42,7 +42,7 @@ public class AddChooseCourse {
 
     @RabbitListener(queues = {RabbitMQConfig.XC_LEARNING_ADDCHOOSECOURSE})
     public void addCourse (String msg) {
-        if (msg == null && StringUtils.isEmpty(msg)) {
+        if (StringUtils.isEmpty(msg)) {
             return;
         }
         XcTask xcTask = JSON.parseObject(msg, XcTask.class);
@@ -55,6 +55,11 @@ public class AddChooseCourse {
             String userId = (String) map.get("userId");
             String courseId = (String) map.get("courseId");
             String valid = (String) map.get("valid");
+            String courseName = (String) map.get("courseName");
+            String teachpalnId = (String) map.get("teachpalnId");
+            String teachpalnName = (String) map.get("teachpalnName");
+            Integer teachpalnNum = (Integer) map.get("teachpalnNum");
+
             Date startTime = null;
             Date endTime = null;
             SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY‐MM‐dd HH:mm:ss");
@@ -65,7 +70,7 @@ public class AddChooseCourse {
                 endTime =dateFormat.parse((String) map.get("endTime"));
             }
             // 添加选课
-            ResponseResult addCourse = learningService.addCourse(userId, courseId, valid,startTime, endTime,xcTask);
+            ResponseResult addCourse = learningService.addCourse(courseName, teachpalnNum, teachpalnId, teachpalnName, userId, courseId, valid, startTime, endTime, xcTask);
             // 选课成功发送响应消息
             if(addCourse.isSuccess()){
                 // 向mq发送选课消息

@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -30,6 +31,8 @@ public class XcLearningCourse implements Serializable {
     private String teachplanId;
     @Column(name = "teachplan_name")
     private String teachplanName;
+    @Column(name = "teachpaln_num")
+    private Integer teachpalnNum;
     @Column(name = "user_id")
     private String userId;
     private String valid;
@@ -39,8 +42,8 @@ public class XcLearningCourse implements Serializable {
     private Date endTime;
     private String status;
     @Column(name="complete_percent")
-    private String completePercent;
-    @Column(name="updateTime")
-    private String updateTime;
+    private BigDecimal completePercent;
+    @Column(name="update_time")
+    private Date updateTime;
 
 }

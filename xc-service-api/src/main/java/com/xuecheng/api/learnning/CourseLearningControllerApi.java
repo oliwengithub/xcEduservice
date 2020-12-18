@@ -9,4 +9,5 @@ public interface CourseLearningControllerApi {
 
     @ApiOperation("获取课程学习地址")
     public GetMediaResult getMedia(String courseId, String teachplanId);
+
 }

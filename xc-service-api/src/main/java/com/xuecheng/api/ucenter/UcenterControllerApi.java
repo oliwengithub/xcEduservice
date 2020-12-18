@@ -1,5 +1,6 @@
 package com.xuecheng.api.ucenter;
 
+import com.xuecheng.framework.domain.ucenter.XcTeacher;
 import com.xuecheng.framework.domain.ucenter.XcUser;
 import com.xuecheng.framework.domain.ucenter.ext.UserInfo;
 import com.xuecheng.framework.domain.ucenter.ext.XcUserExt;
@@ -18,6 +19,9 @@ public interface UcenterControllerApi {
     @ApiOperation("获取个人信息")
     public UserInfo getUserInfo (String userId);
 
+    @ApiOperation("获取信息（单独的对象信息）")
+    public XcUser getUser (String userId);
+
     @ApiOperation("个人信息修改")
     public ResponseResult edit (XcUser xcUser);
 
@@ -35,5 +39,11 @@ public interface UcenterControllerApi {
 
     @ApiOperation("重置用户密码")
     public ResponseResult resetPassword ( XcUser xcUser);
+
+    @ApiOperation("获取老师信息")
+    public XcTeacher getTeacherInfo (String id);
+
+    @ApiOperation("更新老师信息")
+    public ResponseResult editTeacherInfo (XcTeacher xcTeacher);
 
 }

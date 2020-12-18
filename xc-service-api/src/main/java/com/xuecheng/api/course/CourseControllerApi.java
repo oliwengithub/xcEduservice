@@ -36,7 +36,6 @@ public interface CourseControllerApi {
     @ApiOperation("更新课程营销信息")
     public ResponseResult updateCourseMarket(String id,CourseMarket courseMarket);
 
-    //查询课程列表
     @ApiOperation("查询我的课程列表")
     public QueryResponseResult findCourseList(int page, int size, CourseListRequest courseListRequest);
 
@@ -63,5 +62,8 @@ public interface CourseControllerApi {
 
     @ApiOperation("保存媒资和课程关联的信息")
     public ResponseResult savemedia(TeachplanMedia teachplanMedia);
+
+    @ApiOperation("获取单个课程计划")
+    public Teachplan getCourseTeachplan(String teachplanId);
 
 }

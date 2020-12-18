@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xuecheng.learning.dao.CourseCommentMapper">
+
+    <select id="getCourseCommentList" parameterType="com.xuecheng.framework.domain.learning.requset.CourseCommentResultList" resultType="com.xuecheng.framework.domain.learning.XcLearningCourseComment">
+        SELECT id, user_id userId, course_id courseId, `comment`, score, `status`, create_time createTime
+        FROM `xc_learning_course_comment`
+        <where>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="courseId != null and courseId != ''">
+                AND course_id = #{courseId}
+            </if>
+            <if test="startScore != null and startScore != '' and endScore != null and endScore != '' ">
+                AND score BETWEEN #{startScore} AND #{endScore}
+            </if>
+
+        </where>
+        ORDER BY createTime DESC
+    </select>
+
+</mapper>

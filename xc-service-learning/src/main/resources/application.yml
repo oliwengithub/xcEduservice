@@ -5,7 +5,7 @@ spring:
     name: xc-service-learning
   datasource:
     druid:
-      url: ${MYSQL_URL:jdbc:mysql://localhost:3306/xc_learning?characterEncoding=utf-8}
+      url: ${MYSQL_URL:jdbc:mysql://localhost:3306/xc_learning?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull}
       username: root
       password: 123456
       driverClassName: com.mysql.jdbc.Driver

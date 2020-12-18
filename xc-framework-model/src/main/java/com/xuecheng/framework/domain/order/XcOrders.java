@@ -34,5 +34,8 @@ public class XcOrders implements Serializable {
     private String userId;
     @Column(name = "details")
     private String details;
+    @Column(name = "create_time")
+    private Date createTime;
+
 
 }
