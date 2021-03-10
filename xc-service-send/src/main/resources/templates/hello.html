@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>验证码 | 在线教育网</title>
+    <style>   * {
+        margin: 0px;
+        padding: 0;
+    }
+
+    .email-content {
+        width: 680px;
+        max-width: 80%;
+        border: 1px solid #ccc;
+        margin: 20px auto;
+    }
+
+    .email-content h1.title {
+        font-size: 20px;
+        width: 100%;
+        line-height: 56px;
+        background: #039588;
+        text-align: center;
+        font-weight: normal;
+        color: #fff;
+    }
+
+    .email-content .email-tip {
+        padding: 0 30px;
+    }
+
+    .email-content .email-tip h2 {
+        font-size: 16px;
+        font-weight: normal;
+        line-height: 60px;
+    }
+
+    .email-content .email-tip p {
+        font-size: 18px;
+        color: #039588;
+        line-height: 40px;
+        margin-bottom: 20px;
+    }
+
+    .email-content .email-tip span {
+        font-size: 12px;
+        color: #333;
+    }
+
+    .email-content .email-info {
+        width: 50%;
+        margin: 10px auto;
+        font-size: 14px;
+        background: #f5f5f5;
+        padding: 30px;
+        margin-bottom: 60px;
+    }
+
+    .email-content .email-info .email-info-item {
+        line-height: 40px;
+    }
+
+    .email-content .email-info .email-info-item label {
+        width: 80px;
+        display: inline-block;
+    }
+
+    .email-content .email-footer {
+        background: #039588;
+        color: #fff;
+        font-size: 14px;
+        line-height: 30px;
+        padding: 0 10px;
+    }
+    .email-content .email-info .code {
+        font-size: 20px;
+        color: #039588;
+
+    }
+
+    @media only screen and (min-width: 240px) and (max-width: 340px) {
+        .email-content .email-tip p {
+            font-size: 16px;
+        }
+
+        .email-content .email-info {
+            width: 90%;
+            padding: 20px 30px;
+        }
+        .email-content .email-info .code {
+            font-size: 16px;
+            color: #039588;
+
+        }
+
+    }  </style>
+</head>
+<body>
+<div class="email-content">
+    <div class="email-tip"><h2>尊敬的【${username}】：</h2>
+        <p>您好！您正在邮箱验证操作！</p>    <span>以下为你的所需要的重要信息，请注意保密：</span></div>
+    <div class="email-info">
+        <span>请在验证码输入框中输入：<span class="code">  ${code}  </span>以完成操作！</span>
+    </div>
+    <div class="email-footer">注意：此操作可能会修改您的密码、登录邮箱或绑定手机。如非本人操作，请及时登录并修改密码以保证帐户安全。
+        (该邮件地址不接收回复邮件,工作人员不会向你索取此验证码，请勿泄漏！)
+    </div>
+</div>
+</body>
+</html>
