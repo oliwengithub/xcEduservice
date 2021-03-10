@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xuecheng.learning.dao.CourseQuestionMapper">
+
+    <select id="getCourseQuestionGroup" parameterType="java.lang.String" resultType="com.xuecheng.framework.domain.learning.ext.CourseQuestionExt" >
+		SELECT
+			a.group_id groupId, a.user_id applyUserId,
+			b.id, b.content, b.user_id userId, b.create_time createTime
+
+		FROM xc_learning_course_question a
+		LEFT JOIN xc_learning_course_question b ON a.id = b.parent_id
+		WHERE
+		a.group_id = #{groupId} AND b.id &lt;&gt; ''
+    </select>
+
+	<select id="getCourseQuestionList" resultType="com.xuecheng.framework.domain.learning.ext.CourseQuestionGroupNode">
+		SELECT id, group_id groupId, user_id userId, content, reply_count replyCount, create_time createTime, parent_id parentId FROM xc_learning_course_question WHERE parent_id = '0'
+	</select>
+
+</mapper>

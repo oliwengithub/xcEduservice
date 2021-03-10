@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.github.pagehelper.Page;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import javax.sound.midi.Soundbank;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,7 @@ public class TestDao {
 
     @Autowired
     TeachplanMediaRepository teachplanMediaRepository;
+
 
     @Test
     public void teachplanMediaRepository(){

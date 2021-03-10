@@ -24,7 +24,7 @@ public class CourseStateTask {
     @Autowired
     CourseStateService courseStateService;
 
-    @Scheduled(fixedRate =  1000)
+    //@Scheduled(fixedRate =  1000)
     public void CourseStateTask () {
         try {
             LOGGER.info("课程统计任务开始"+ new Date());

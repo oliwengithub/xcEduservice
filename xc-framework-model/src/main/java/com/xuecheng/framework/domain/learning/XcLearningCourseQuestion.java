@@ -26,6 +26,8 @@ public class XcLearningCourseQuestion implements Serializable {
     @GeneratedValue(generator = "jpa-uuid")
     @Column(length = 32)
     private String id;
+    @Column(name = "group_id")
+    private String groupId;
     @Column(name = "parent_id")
     private String parentId;
     @Column(name = "course_id")

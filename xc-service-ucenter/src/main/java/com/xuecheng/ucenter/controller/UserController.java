@@ -1,6 +1,7 @@
 package com.xuecheng.ucenter.controller;
 
 import com.xuecheng.api.ucenter.UcenterControllerApi;
+import com.xuecheng.api.ucenter.UserAccountApi;
 import com.xuecheng.framework.domain.Constants;
 import com.xuecheng.framework.domain.ucenter.XcTeacher;
 import com.xuecheng.framework.domain.ucenter.XcUser;
@@ -12,7 +13,6 @@ import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.framework.utils.Oauth2Util;
 import com.xuecheng.framework.web.BaseController;
 import com.xuecheng.ucenter.service.UserService;
-import lombok.experimental.PackagePrivate;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/ucenter")
-public class UserController  extends BaseController implements UcenterControllerApi  {
+public class UserController  extends BaseController implements UcenterControllerApi, UserAccountApi {
 
     @Autowired
     private UserService userService;
@@ -129,4 +129,28 @@ public class UserController  extends BaseController implements UcenterController
     }
 
 
+    @Override
+    public ResponseResult bindPhone (String phone, String code) {
+        return null;
+    }
+
+    @Override
+    public ResponseResult removeBind (String account) {
+        return null;
+    }
+
+    @Override
+    public ResponseResult bindEmail (String Email, String code) {
+        return null;
+    }
+
+    @Override
+    public ResponseResult editPass (String newPass, String oldPass) {
+        return null;
+    }
+
+    @Override
+    public ResponseResult getCode (String account) {
+        return null;
+    }
 }

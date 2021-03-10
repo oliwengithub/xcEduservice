@@ -14,5 +14,5 @@ import java.util.List;
 @ToString
 public class XcMenuNode extends XcMenu {
 
-    List<CategoryNode> children;
+    List<XcMenuNode> children;
 }

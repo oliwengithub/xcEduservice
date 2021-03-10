@@ -1,5 +1,6 @@
 package com.xuecheng.auth.controller;
 
+
 import com.xuecheng.api.auth.AuthControllerApi;
 import com.xuecheng.api.auth.UserRegisterControllerApi;
 import com.xuecheng.auth.service.AuthService;

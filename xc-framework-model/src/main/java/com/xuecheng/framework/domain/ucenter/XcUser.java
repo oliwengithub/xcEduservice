@@ -26,7 +26,7 @@ public class XcUser {
     private String salt;
     private String name;
     private String utype;
-    private String birthday;
+    private Date birthday;
     private String userpic;
     private String sex;
     private String email;
