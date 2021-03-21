@@ -69,7 +69,7 @@ public class VerificationCodeService {
         }
 
 
-        return new ResponseResult(CommonCode.FAIL);
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
