@@ -20,14 +20,15 @@ eureka:
     registerWithEureka: true #服务注册，是否将自己注册到Eureka服务中
     fetchRegistry: true #服务发现，是否从Eureka中获取注册信息
     serviceUrl: #Eureka客户端与Eureka服务端的交互地址，高可用状态配置对方的地址，单机状态配置自己（如果不配置则默认本机8761端口）
-      defaultZone: ${EUREKA_SERVER:http://localhost:50101/eureka/,http://localhost:50102/eureka/}
+      defaultZone: ${EUREKA_SERVER:http://localhost:50101/eureka/}
   server:
     enable-self-preservation: false #是否开启自我保护模式
     eviction-interval-timer-in-ms: 60000 #服务注册表清理间隔（单位毫秒，默认是60*1000）
   instance:
-    prefer-ip-address: true #将自己的ip地址注册到Eureka服务中
-    ip-address: ${IP_ADDRESS:127.0.0.1}
-    instance-id: ${spring.application.name}:${server.port} #指定实例id
+    prefer‐ip‐address: true #将自己的ip地址注册到Eureka服务中
+    ip‐address: ${IP_ADDRESS:127.0.0.1}
+    instance‐id: ${spring.application.name}:${server.port} #指定实例id
+    hostname: ${EUREKA_DOMAIN:eureka01}
 ribbon:
   MaxAutoRetries: 2 #最大重试次数，当Eureka中可以找到服务，但是服务连不上时将会重试
   MaxAutoRetriesNextServer: 3 #切换实例的重试次数

@@ -8,6 +8,7 @@ import com.xuecheng.framework.domain.ucenter.XcUser;
 import com.xuecheng.framework.domain.ucenter.ext.UserInfo;
 import com.xuecheng.framework.domain.ucenter.ext.XcUserExt;
 import com.xuecheng.framework.domain.ucenter.request.UserListRequest;
+import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.framework.utils.Oauth2Util;
@@ -129,9 +130,15 @@ public class UserController  extends BaseController implements UcenterController
     }
 
 
+    @PostMapping("/bindphone")
     @Override
     public ResponseResult bindPhone (String phone, String code) {
-        return null;
+        Map<String, String> fromHeader = Oauth2Util.getJwtClaimsFromHeader(request);
+        String username = fromHeader.get("user_name");
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseResult(CommonCode.UNAUTHENTICATED);
+        }
+        return userService.bindPhone(phone,code,username);
     }
 
     @Override
@@ -139,18 +146,36 @@ public class UserController  extends BaseController implements UcenterController
         return null;
     }
 
+    @PostMapping("/bindemail")
     @Override
-    public ResponseResult bindEmail (String Email, String code) {
-        return null;
+    public ResponseResult bindEmail (String email, String code) {
+        Map<String, String> fromHeader = Oauth2Util.getJwtClaimsFromHeader(request);
+        String username = fromHeader.get("user_name");
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseResult(CommonCode.UNAUTHENTICATED);
+        }
+        return userService.bindEmail(email,code,username);
     }
 
+    @PostMapping("/editpass")
     @Override
     public ResponseResult editPass (String newPass, String oldPass) {
-        return null;
+        Map<String, String> fromHeader = Oauth2Util.getJwtClaimsFromHeader(request);
+        String username = fromHeader.get("user_name");
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseResult(CommonCode.UNAUTHENTICATED);
+        }
+        return userService.editPass(newPass, oldPass, username);
     }
 
+    @PostMapping("/getcode")
     @Override
-    public ResponseResult getCode (String account) {
-        return null;
+    public ResponseResult getCode (@RequestParam("account") String account) {
+        Map<String, String> fromHeader = Oauth2Util.getJwtClaimsFromHeader(request);
+        String username = fromHeader.get("user_name");
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseResult(CommonCode.UNAUTHENTICATED);
+        }
+        return userService.getCode(account, username);
     }
 }

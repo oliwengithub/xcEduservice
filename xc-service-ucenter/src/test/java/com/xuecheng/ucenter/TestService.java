@@ -2,9 +2,11 @@ package com.xuecheng.ucenter;
 
 import com.xuecheng.framework.domain.ucenter.XcPermission;
 import com.xuecheng.framework.model.response.ResponseResult;
+import com.xuecheng.framework.utils.BCryptUtil;
 import com.xuecheng.ucenter.dao.XcPermissionRepository;
 import com.xuecheng.ucenter.service.XcRoleService;
 import net.bytebuddy.asm.Advice;
+import org.bouncycastle.crypto.generators.BCrypt;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +53,11 @@ public class TestService {
         List<XcPermission> xcPermissions = xcPermissionRepository.saveAll(permissionsAdd);
         System.out.println(xcPermissions);
 
+    }
+
+    @Test
+    public void testBCryptUtils () {
+        boolean matches = BCryptUtil.matches("111111", "$2a$10$5f9cX./K0HYoV9LrJ4r27ejiOieqnec1AdMbiNKmb7C5JETduhMwy");
+        System.out.println(matches);
     }
 }

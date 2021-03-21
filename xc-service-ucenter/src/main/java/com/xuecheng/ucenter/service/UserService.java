@@ -14,15 +14,18 @@ import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.QueryResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.framework.utils.BCryptUtil;
+import com.xuecheng.ucenter.client.SendFeignClient;
 import com.xuecheng.ucenter.dao.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.auth.AUTH;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -56,6 +59,12 @@ public class UserService {
 
     @Autowired
     private XcUserMapper xcUserMapper;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private SendFeignClient sendFeignClient;
 
     /**
      * 获取用户信息
@@ -391,4 +400,66 @@ public class UserService {
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
+    /**
+     * 绑定手机
+     * @author: olw
+     * @Date: 2021/3/11 15:55
+     * @param phone
+     * @param code
+     * @returns: com.xuecheng.framework.model.response.ResponseResult
+    */
+    public ResponseResult bindPhone (String phone, String code, String username) {
+        boolean flag = checkCode(phone, code);
+        if (!flag) {
+            return new ResponseResult(UcenterCode.UCENTER_VERIFYCODE_ERROR);
+        }
+        XcUser user = findXcUserByUsername(username);
+        user.setUpdateTime(new Date());
+        user.setPhone(phone);
+        xcUserRepository.save(user);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 绑定邮箱
+     * @author: olw
+     * @Date: 2021/3/11 15:55
+     * @param email
+     * @param code
+     * @returns: com.xuecheng.framework.model.response.ResponseResult
+     */
+    public ResponseResult bindEmail (String email, String code, String username) {
+        boolean flag = checkCode(email, code);
+        if (!flag) {
+            return new ResponseResult(UcenterCode.UCENTER_VERIFYCODE_ERROR);
+        }
+        XcUser user = findXcUserByUsername(username);
+        user.setUpdateTime(new Date());
+        user.setEmail(email);
+        xcUserRepository.save(user);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    public ResponseResult editPass (String newPass, String oldPass, String username) {
+        XcUser user = findXcUserByUsername(username);
+        String password = user.getPassword();
+        boolean matches = BCryptUtil.matches(oldPass, password);
+        if (!matches) {
+            ExceptionCast.cast(UcenterCode.UCENTER_PASSWORD_ERROR);
+        }
+        user.setPassword(BCryptUtil.encode(newPass));
+        xcUserRepository.save(user);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    // 校验验证码
+    public boolean checkCode (String account, String code) {
+        String key = "code_" + account;
+        String s = stringRedisTemplate.opsForValue().get(key);
+        return code.equals(s);
+    }
+
+    public ResponseResult getCode (String account, String username) {
+        return sendFeignClient.getCode(account, username);
+    }
 }
