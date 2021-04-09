@@ -49,7 +49,5 @@ eureka:
     suffix: .html # 模版后缀名 默认为ftl
     charset: UTF-8 # 文件编码
     template-loader-path: classpath:/templates/  # 存放模板的文件夹，以resource文件夹为相对路径
-aliyun:
-  accessKeyID: LTAI4G3XcFwmsbBhhXJZv567
-  accessKeySecret: LMl75HCr5J8Tmt42afrSZjNE9DSR23
+
 
