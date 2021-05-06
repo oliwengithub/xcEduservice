@@ -16,4 +16,27 @@
             </otherwise>
         </choose>
     </select>
+
+    <select id="findAllOrderList" parameterType="com.xuecheng.framework.domain.order.request.OrderRequestList"
+            resultType="com.xuecheng.framework.domain.order.XcOrders">
+
+        SELECT order_number orderNumber, initial_price initialPrice, price, user_id userId, details,`status`, create_time createTime FROM `xc_orders`
+            WHERE 1=1
+            <choose>
+                <when test="orderNumber!=null and orderNumber!='' ">
+                    AND  order_number LIKE CONCAT(CONCAT('%', #{orderNumber}), '%')
+                </when>
+                <otherwise>
+                    <if test="status!=null and status!='' ">
+                        AND  `status` = #{status}
+                    </if>
+
+                    <if test="startTime!=null and endTime!=null and startTime!='' and endTime!=''">
+                        AND  create_time &gt;= #{startTime} AND create_time &lt;= #{endTime}
+                    </if>
+
+                </otherwise>
+            </choose>
+        ORDER BY create_time DESC
+    </select>
 </mapper>

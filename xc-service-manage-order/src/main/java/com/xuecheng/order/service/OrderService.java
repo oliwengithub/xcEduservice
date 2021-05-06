@@ -1,6 +1,7 @@
 package com.xuecheng.order.service;
 
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.PageHelper;
 import com.netflix.discovery.converters.Auto;
 import com.netflix.hystrix.HystrixCommandResponseFromCache;
 import com.xuecheng.framework.domain.course.CoursePub;
@@ -66,14 +67,14 @@ public class OrderService {
     private SearchClient searchClient;
 
     /**
-     * 查询用户
+     * 查询用户订单
      * @author: olw
      * @Date: 2020/11/3 18:42
      * @param page
      * @param size
      * @param orderRequestList
      * @returns: com.xuecheng.framework.model.response.QueryResponseResult
-    */
+     */
     public QueryResponseResult findOrderList (int page, int size, OrderRequestList orderRequestList) {
         if (orderRequestList == null) {
             orderRequestList = new OrderRequestList();
@@ -95,7 +96,7 @@ public class OrderService {
      * @Date: 2020/11/3 19:12
      * @param orderId
      * @returns: com.xuecheng.framework.domain.order.XcOrders
-    */
+     */
     public XcOrders findOrderById (String orderId) {
         Optional<XcOrders> optional = xcOrdersRepository.findById(orderId);
         if (optional.isPresent()) {
@@ -110,7 +111,7 @@ public class OrderService {
      * @Date: 2020/11/4 16:13
      * @param createOrderRequest
      * @returns: com.xuecheng.framework.domain.order.response.CreateOrderResult
-    */
+     */
     @Transactional(rollbackFor = Exception.class)
     public CreateOrderResult createOrders (CreateOrderRequest createOrderRequest) {
 
@@ -197,7 +198,7 @@ public class OrderService {
      * @param courseId
      * @param status 订单支付状态 402 001未支付 002支付成功 003已关闭 004支付失败
      * @returns: com.xuecheng.framework.domain.order.XcOrders
-    */
+     */
     public XcOrdersPay checkIsBuyCourse (String userId, String courseId, String status) {
         List<XcOrdersPay> orderPayStatus = orderMapper.findOrderPayStatus(userId, courseId, status);
         if (orderPayStatus != null && orderPayStatus.size() > 0) {
@@ -213,7 +214,7 @@ public class OrderService {
      * @param userId
      * @param orderNumber
      * @returns: com.xuecheng.framework.domain.order.XcOrders
-    */
+     */
     public XcOrders findOrderByUserIdAndOrderNumber (String userId, String orderNumber) {
         return xcOrdersRepository.findXcOrdersByUserIdAndOrderNumber(userId, orderNumber);
     }
@@ -224,12 +225,30 @@ public class OrderService {
      * @Date: 2020/11/13 17:28
      * @param orderId
      * @returns: com.xuecheng.framework.domain.order.response.OrderResult
-    */
+     */
     public OrderResult getOrderById (String orderId) {
         XcOrders xcOrders = this.findOrderById(orderId);
         if (xcOrders == null) {
             return new OrderResult(OrderCode.ORDER_FINISH_NOTFOUNDORDER,null);
         }
         return new OrderResult(CommonCode.SUCCESS, xcOrders);
+    }
+
+    public QueryResponseResult findAllOrderList (int page, int size, OrderRequestList orderRequestList) {
+        if (orderRequestList == null) {
+            orderRequestList = new OrderRequestList();
+        }
+        // 构建分页对象
+        page = page == 0 ? page : page-1;
+        size = size == 0 ? 10 : size;
+
+        PageHelper.startPage(page, size);
+        com.github.pagehelper.Page<XcOrders> allOrderList = orderMapper.findAllOrderList(orderRequestList);
+        QueryResult<XcOrders> queryResult = new QueryResult<>();
+        queryResult.setList(allOrderList.getResult());
+        queryResult.setTotal(allOrderList.getTotal());
+        return new QueryResponseResult<XcOrders>(CommonCode.SUCCESS, queryResult);
+
+
     }
 }

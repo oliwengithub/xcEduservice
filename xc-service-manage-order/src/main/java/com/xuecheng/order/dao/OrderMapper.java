@@ -1,6 +1,9 @@
 package com.xuecheng.order.dao;
 
+import com.github.pagehelper.Page;
+import com.xuecheng.framework.domain.order.XcOrders;
 import com.xuecheng.framework.domain.order.XcOrdersPay;
+import com.xuecheng.framework.domain.order.request.OrderRequestList;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +27,15 @@ public interface OrderMapper {
      * @returns: java.util.List<com.xuecheng.framework.domain.order.XcOrdersPay>
     */
     public List<XcOrdersPay> findOrderPayStatus (@Param("userId") String userId, @Param("courseId") String courseId, @Param("status")String status);
+
+    /**
+     * 后台获取所有订单列表
+     * @author: olw
+     * @Date: 2021/4/13 15:56
+     * @param orderRequestList
+     * @returns: com.github.pagehelper.Page<com.xuecheng.framework.domain.order.XcOrders>
+    */
+    public Page<XcOrders> findAllOrderList (OrderRequestList orderRequestList);
+
+
 }
