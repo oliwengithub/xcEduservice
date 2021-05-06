@@ -19,7 +19,7 @@ spring:
     #邮箱账号
     username: xuecheng.mail@qq.com
     #邮箱密码或授权码
-    password: gklvlzhdbpchggie
+    password:
     #协议
     protocol: smtp
     #这里换成自己的邮箱类型 例如qq邮箱就写smtp
@@ -49,5 +49,7 @@ eureka:
     suffix: .html # 模版后缀名 默认为ftl
     charset: UTF-8 # 文件编码
     template-loader-path: classpath:/templates/  # 存放模板的文件夹，以resource文件夹为相对路径
-
+aliyun:
+  accessKeyID:
+  accessKeySecret:
 
