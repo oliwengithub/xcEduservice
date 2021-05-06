@@ -99,6 +99,13 @@ public class EsCourseService {
             boolQueryBuilder.filter(QueryBuilders.termQuery("grade",courseSearchParam.getGrade()));
         }
 
+        //定义高亮
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        highlightBuilder.preTags("<font class='eslight'>");
+        highlightBuilder.postTags("</font>");
+        highlightBuilder.fields().add(new HighlightBuilder.Field("name"));
+        searchSourceBuilder.highlighter(highlightBuilder);
+
         //设置boolQueryBuilder到searchSourceBuilder
         searchSourceBuilder.query(boolQueryBuilder);
         searchRequest.source(searchSourceBuilder);
@@ -114,12 +121,6 @@ public class EsCourseService {
             long totalHits = hits.totalHits;
             queryResult.setTotal(totalHits);
             SearchHit[] searchHits = hits.getHits();
-            //定义高亮
-            HighlightBuilder highlightBuilder = new HighlightBuilder();
-            highlightBuilder.preTags("<font class='eslight'>");
-            highlightBuilder.postTags("</font>");
-            highlightBuilder.fields().add(new HighlightBuilder.Field("name"));
-            searchSourceBuilder.highlighter(highlightBuilder);
             for(SearchHit hit:searchHits){
                 CoursePub coursePub = new CoursePub();
                 //源文档
