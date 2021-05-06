@@ -529,12 +529,16 @@ public class CourseService {
         Optional<CourseMarket> marketOptional = courseMarketRepository.findById(id);
         if(marketOptional.isPresent()){
             CourseMarket courseMarket = marketOptional.get();
-            SimpleDateFormat sdf = new SimpleDateFormat("YYYY‐MM‐dd HH:mm:ss");
-            Date startTime = courseMarket.getStartTime();
-            Date endTime = courseMarket.getEndTime();
             BeanUtils.copyProperties(courseMarket, coursePub);
-            coursePub.setStartTime(sdf.format(startTime));
-            coursePub.setEndTime(sdf.format(endTime));
+            // 课程收费需要设置有效时间
+            if (courseMarket.getCharge().equals("203002")) {
+                SimpleDateFormat sdf = new SimpleDateFormat("YYYY‐MM‐dd HH:mm:ss");
+                Date startTime = courseMarket.getStartTime();
+                Date endTime = courseMarket.getEndTime();
+                coursePub.setStartTime(sdf.format(startTime));
+                coursePub.setEndTime(sdf.format(endTime));
+            }
+
         }
         //课程计划
         TeachplanNode teachplanNode = teachMapper.selectList(id);

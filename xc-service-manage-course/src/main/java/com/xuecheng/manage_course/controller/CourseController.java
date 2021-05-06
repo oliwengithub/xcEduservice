@@ -85,10 +85,11 @@ public class CourseController extends BaseController implements CourseController
     @Override
     @GetMapping("/coursebase/list/{page}/{size}")
     public QueryResponseResult findCourseList (@PathVariable("page") int page, @PathVariable("size") int size, CourseListRequest courseListRequest) {
-       XcOauth2Util util = new XcOauth2Util();
-        XcOauth2Util.UserJwt jwt = util.getUserJwtFromHeader(request);
+        XcOauth2Util.UserJwt jwt = XcOauth2Util.getUserJwtFromHeader(request);
+        // 对应机构教师查询课程列表
         if (jwt != null) {
             courseListRequest.setCompanyId(jwt.getCompanyId());
+            courseListRequest.setUserId(jwt.getId());
         }
         return courseService.findCourseList(page, size, courseListRequest);
     }
