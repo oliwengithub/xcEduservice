@@ -8,5 +8,6 @@ import java.util.List;
 public interface XcLearningCourseScheduleRepository extends JpaRepository<XcLearningCourseSchedule, String> {
 
     public List<XcLearningCourseSchedule> findByUserIdAndCourseId (String userId, String courseId);
+    public XcLearningCourseSchedule findByUserIdAndTeachplanId (String userId, String teachplanId);
 
 }

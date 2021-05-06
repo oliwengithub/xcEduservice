@@ -100,9 +100,7 @@ public class LearningService {
         }
 
         // 2.校验课程有效期
-        Date endTime = learningCourse.getEndTime();
-        Date date = new Date();
-        if (!date.after(endTime)) {
+        if (checkCourseFlag(learningCourse.getValid(), learningCourse.getEndTime())) {
             ExceptionCast.cast(LearningCode.CHOOSECOURSE_TASKISNULL);
         }
         // 远程调用获取课程计划对应的媒资地址
@@ -130,6 +128,22 @@ public class LearningService {
         rabbitTemplate.convertAndSend(RabbitMQConfig.EX_LEARNING_SCHEDULE, RabbitMQConfig.XC_LEARNING_SCHEDULE_KEY, jsonString);
 
         return new GetMediaResult(CommonCode.SUCCESS, media.getMediaUrl());
+    }
+
+
+    /**
+     * 校验课程的有效性
+     * @author: olw
+     * @Date: 2021/3/21 14:52
+     * @param valid
+     * @param endTime
+     * @returns: boolean
+    */
+    private boolean checkCourseFlag(String valid, Date endTime) {
+        if("204002".equals(valid) && new Date().before(endTime)) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -177,14 +191,7 @@ public class LearningService {
         // 设置初始化进度
         xcLearningCourse.setCompletePercent(new BigDecimal("0.00"));
         xcLearningCourseRepository.save(xcLearningCourse);
-        // 向历史任务表插入记录
-        Optional<XcTaskHis> optional = xcTaskHisRepository.findById(xcTask.getId());
-        if(!optional.isPresent()) {
-            // 添加历史任务
-            XcTaskHis xcTaskHis = new XcTaskHis();
-            BeanUtils.copyProperties(xcTask, xcTaskHis);
-            xcTaskHisRepository.save(xcTaskHis);
-        }
+        // 向历史任务表插入记录 不需要
 
         return new ResponseResult(CommonCode.SUCCESS);
     }
@@ -344,8 +351,8 @@ public class LearningService {
             finishNum = finishNum + learningCourseSchedules.size();
         }
         // 是否已经观看
-        Optional<XcLearningCourseSchedule> byId = xcLearningCourseScheduleRepository.findById(teachplanId);
-        if (!byId.isPresent()) {
+        XcLearningCourseSchedule xcLearningCourseSchedule = xcLearningCourseScheduleRepository.findByUserIdAndTeachplanId(userId, teachplanId);
+        if (xcLearningCourseSchedule == null) {
             finishNum = finishNum + 1;
 
         }
@@ -354,12 +361,12 @@ public class LearningService {
         BigDecimal percent = new BigDecimal(s);
         learningCourse.setCompletePercent(percent);
 
-        XcLearningCourseSchedule xcLearningCourseSchedule = new XcLearningCourseSchedule();
-        BeanUtils.copyProperties(courseScheduleExt, xcLearningCourseSchedule);
-        xcLearningCourseSchedule.setTeachplanId(teachplanId);
+        XcLearningCourseSchedule newSchedule = new XcLearningCourseSchedule();
+        BeanUtils.copyProperties(courseScheduleExt, newSchedule);
+        newSchedule.setTeachplanId(teachplanId);
 
         xcLearningCourseRepository.save(learningCourse);
-        xcLearningCourseScheduleRepository.save(xcLearningCourseSchedule);
+        xcLearningCourseScheduleRepository.save(newSchedule);
     }
 
     /**
