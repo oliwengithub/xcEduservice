@@ -59,8 +59,8 @@ public class MediaProcessTask {
         MediaFile mediaFile = optional.get();
         // 媒资文件类型
         String fileType = mediaFile.getFileType();
-        // 目前只处理avi文件
-        if(fileType == null || !fileType.equals("avi")){
+        // 目前只处理ffmpeg支持视频文件
+        if(fileType == null || !videoType(fileType)){
             // 处理状态为无需处理
             mediaFile.setProcessStatus("303004");
             mediaFileRepository.save(mediaFile);
@@ -70,7 +70,7 @@ public class MediaProcessTask {
             mediaFile.setProcessStatus("303001");
             mediaFileRepository.save(mediaFile);
         }
-        // 生成mp4
+        // 进行视频转码 生成mp4
         // 原始上传文件路径
         String video_path = serverPath + mediaFile.getFilePath()+mediaFile.getFileName();
         // 生成mp4的文件名
@@ -112,7 +112,6 @@ public class MediaProcessTask {
         // 获取m3u8列表
         List<String> ts_list = hlsVideoUtil.get_ts_list();
         // 更新处理状态为成功
-        // 处理状态为处理成功
         mediaFile.setProcessStatus("303002");
         MediaFileProcess_m3u8 mediaFileProcess_m3u8 = new MediaFileProcess_m3u8();
         mediaFileProcess_m3u8.setTslist(ts_list);
@@ -122,5 +121,24 @@ public class MediaProcessTask {
         mediaFileRepository.save(mediaFile);
     }
 
+
+
+    /**
+     * 校验资源格式是否为视频
+     * @author: olw
+     * @Date: 2021/5/6 16:22
+     * @param prefix
+     * @returns: boolean
+    */
+    private  boolean videoType(String prefix) {
+        if("mp4".equalsIgnoreCase(prefix) || "avi".equalsIgnoreCase(prefix) || "MPEG-1".equalsIgnoreCase(prefix)
+                || "RM".equalsIgnoreCase(prefix) || "ASF".equalsIgnoreCase(prefix) || "WMV".equalsIgnoreCase(prefix)
+                || "qlv".equalsIgnoreCase(prefix) || "MPEG-2".equalsIgnoreCase(prefix) || "MPEG4".equalsIgnoreCase(prefix)
+                || "mov".equalsIgnoreCase(prefix) || "3gp".equalsIgnoreCase(prefix)) {
+            return true;
+        }
+        return false;
+
+    }
 
 }

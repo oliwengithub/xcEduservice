@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     public static final String EX_MEDIA_PROCESSTASK = "ex_media_processor";
+    public static final String QUEUE_PROCESSTASK = "queue_processtask";
 
     /**
     * 视频处理队列
@@ -55,7 +56,7 @@ public class RabbitMQConfig {
      * @param
      * @returns: org.springframework.amqp.core.Queue
     */
-    @Bean("queue_media_video_processtask")
+    @Bean(QUEUE_PROCESSTASK)
     public Queue QUEUE_PROCESSTASK() {
         Queue queue = new Queue(queue_media_video_processtask,true,false,true);
         return queue;
@@ -67,7 +68,7 @@ public class RabbitMQConfig {
      * @return the binding
      */
     @Bean
-    public Binding binding_queue_media_processtask(@Qualifier("queue_media_video_processtask") Queue queue, @Qualifier(EX_MEDIA_PROCESSTASK) Exchange exchange) {
+    public Binding binding_queue_media_processtask(@Qualifier(QUEUE_PROCESSTASK) Queue queue, @Qualifier(EX_MEDIA_PROCESSTASK) Exchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingkey_media_video).noargs();
     }
 
