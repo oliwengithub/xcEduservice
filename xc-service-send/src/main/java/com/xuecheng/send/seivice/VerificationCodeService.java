@@ -57,7 +57,7 @@ public class VerificationCodeService {
                 model.put("username", username);
                 model.put("code", code);
                 try {
-                    mailService.sendTemplateMail(account, "邮箱验证 | 在线教育网", "hello.html", model);
+                    mailService.sendTemplateMail(account, "邮箱验证 | 在线教育网", "code.html", model);
                 }catch (Exception e){
                     return new ResponseResult(CommonCode.FAIL);
                 }

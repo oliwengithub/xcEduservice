@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>在线教育网</title>
+    <title>验证码 | 在线教育网</title>
     <style>   * {
         margin: 0px;
         padding: 0;
@@ -99,19 +99,18 @@
 </head>
 <body>
 <div class="email-content">
-    <div class="email-tip"><h2>尊敬的【${name}】：</h2>
-        <p>您好！欢迎您注册本系统</p>    <span>以下为您的所需要的重要信息，请注意保密：</span></div>
+    <div class="email-tip"><h2>尊敬的【${username}】：</h2>
+        <p>您好！您正在邮箱验证操作！</p>    <span>以下为你的所需要的重要信息，请注意保密：</span></div>
     <div class="email-info">
-        <span>账号：<span class="code">  ${account}  </span></span><br />
-        <span>密码：<span class="code">  ${password}  </span></span>
+        <span>请在验证码输入框中输入：<span class="code">  ${code}  </span>以完成操作！</span>
     </div>
     <br>
     <br>
     <br>
 
 
-    <div class="email-footer">注意：请及时登录并修改密码以保证帐户安全。
-        (该邮件地址不接收回复邮件,工作人员不会向你索取此邮件内容，请勿泄漏！)
+    <div class="email-footer">注意：此操作可能会修改您的密码、登录邮箱或绑定手机。如非本人操作，请及时登录并修改密码以保证帐户安全。
+        (该邮件地址不接收回复邮件,工作人员不会向你索取此验证码，请勿泄漏！)
     </div>
 </div>
 </body>

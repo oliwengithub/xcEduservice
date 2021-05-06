@@ -1,6 +1,7 @@
 package com.xuecheng.send;
 
 import com.xuecheng.send.seivice.MailService;
+import com.xuecheng.send.seivice.SendAccountService;
 import com.xuecheng.send.seivice.VerificationCodeService;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
@@ -27,6 +28,9 @@ public class SendEmailTest {
     @Autowired @Qualifier("verificationCodeService")
     VerificationCodeService verificationCodeService;
 
+    @Autowired @Qualifier("sendAccountService")
+    SendAccountService accountService;
+
 
     @Test
     public void sendEmail() {
@@ -47,5 +51,9 @@ public class SendEmailTest {
     @Test
     public void sendEmailService() throws TemplateException, IOException, MessagingException {
         verificationCodeService.getVerificationCode("178263682@qq.com", "oliwen");
+    }
+    @Test
+    public void sendAccountService() throws TemplateException, IOException, MessagingException {
+        accountService.sendAccount("178263682@qq.com", "oliwen", "112323");
     }
 }
