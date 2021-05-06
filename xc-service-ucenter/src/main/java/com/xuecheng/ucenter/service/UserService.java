@@ -20,9 +20,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.auth.AUTH;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.annotation.Retention;
@@ -72,7 +75,7 @@ public class UserService {
      * @Date: 2020/10/18 17:11
      * @param username
      * @returns: com.xuecheng.framework.domain.ucenter.ext.XcUserExt
-    */
+     */
     public XcUserExt getUserExt (String username) {
         // 获取用户信息
         XcUser xcUser = findXcUserByUsername(username);
@@ -119,9 +122,9 @@ public class UserService {
      * @Date: 2020/10/18 17:25
      * @param username
      * @returns: com.xuecheng.framework.domain.ucenter.XcUser
-    */
+     */
     public XcUser findXcUserByUsername (String username) {
-       return xcUserRepository.findXcUserByUsername(username);
+        return xcUserRepository.findXcUserByUsername(username);
     }
 
     /**
@@ -130,7 +133,7 @@ public class UserService {
      * @Date: 2020/10/18 17:34
      * @param userId
      * @returns: com.xuecheng.framework.domain.ucenter.XcCompanyUser
-    */
+     */
     public XcCompanyUser findByUserId (String userId) {
         return xcCompanyUserRepository.findByUserId(userId);
     }
@@ -143,7 +146,7 @@ public class UserService {
      * @param size
      * @param userListRequest
      * @returns: com.xuecheng.framework.model.response.QueryResponseResult
-    */
+     */
     public QueryResponseResult findUserList (int page, int size, UserListRequest userListRequest) {
 
         if (userListRequest == null) {
@@ -169,18 +172,19 @@ public class UserService {
      * @Date: 2020/11/24 17:35
      * @param userInfo
      * @returns: com.xuecheng.framework.model.response.ResponseResult
-    */
-    @Transactional(rollbackFor = Exception.class)
+     */
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
     public ResponseResult add (UserInfo userInfo) {
         // 校验用户名称是否已存在
-        XcUser xcUserByUsername = this.findXcUserByUsername(userInfo.getUsername());
+        XcUser xcUserByUsername = xcUserRepository.findXcUserByUsernameOrEmail(userInfo.getUsername(), userInfo.getEmail());
         if (xcUserByUsername != null) {
             ExceptionCast.cast(AuthCode.AUTH_USERNAME_EXIST);
         }
         //保存用户信息
+        String password = userInfo.getPassword();
         XcUser xcUser = new XcUser();
         BeanUtils.copyProperties(userInfo, xcUser);
-        xcUser.setPassword(BCryptUtil.encode(userInfo.getPassword()));
+        xcUser.setPassword(BCryptUtil.encode(password));
         xcUser.setCreateTime(new Date());
         xcUser.setUpdateTime(new Date());
         XcUser user = xcUserRepository.save(xcUser);
@@ -212,11 +216,16 @@ public class UserService {
             xcTeacherRepository.save(xcTeacher);
 
         }
+        // TODO: 2021/4/8 发送密码账号邮件
+        sendFeignClient.sendAccount(user.getUsername(), user.getName(), password);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
     public ResponseResult updateStatus (XcUser user) {
-        XcUser one = this.findXcUserByUsername(user.getUsername());
+        if (user == null) {
+            ExceptionCast.cast(CommonCode.INVALID_PARAM);
+        }
+        XcUser one = xcUserRepository.findXcUserByUsernameOrId(user.getUsername(), user.getId());
         if (one == null) {
             ExceptionCast.cast(AuthCode.AUTH_USER_NOEXIST);
         }
@@ -232,7 +241,7 @@ public class UserService {
      * @Date: 2020/10/29 16:08
      * @param userId
      * @returns: com.xuecheng.framework.domain.ucenter.ext.UserInfo
-    */
+     */
     public UserInfo getUserInfo (String userId) {
         UserInfo userInfo = new UserInfo();
         // 获取用户信息
@@ -261,7 +270,7 @@ public class UserService {
      * @Date: 2020/11/24 17:52
      * @param userInfo
      * @returns: com.xuecheng.framework.model.response.ResponseResult
-    */
+     */
     @Modifying
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult editInfo (UserInfo userInfo) {
@@ -312,10 +321,10 @@ public class UserService {
                 // 删除绑定的机构
                 xcCompanyUserRepository.delete(companyUser);
             }else if (!companyUser.getCompanyId().equals(companyId)) {
-                 // 判定是否一致
-                 companyUser.setCompanyId(companyId);
-                 xcCompanyUserRepository.save(companyUser);
-             }
+                // 判定是否一致
+                companyUser.setCompanyId(companyId);
+                xcCompanyUserRepository.save(companyUser);
+            }
         }
 
         return new ResponseResult(CommonCode.SUCCESS);
@@ -327,7 +336,7 @@ public class UserService {
      * @Date: 2020/11/24 19:33
      * @param xcUser
      * @returns: com.xuecheng.framework.model.response.ResponseResult
-    */
+     */
     public ResponseResult edit (XcUser xcUser) {
         XcUser one = this.findXcUserByUsername(xcUser.getUsername());
         if (one == null) {
@@ -350,7 +359,7 @@ public class UserService {
      * @Date: 2020/11/25 17:47
      * @param xcUser
      * @returns: com.xuecheng.framework.model.response.ResponseResult
-    */
+     */
     public ResponseResult resetPassword (XcUser xcUser) {
         Optional<XcUser> optional = xcUserRepository.findById(xcUser.getId());
         if (!optional.isPresent()) {
@@ -372,12 +381,10 @@ public class UserService {
      * @Date: 2020/12/9 17:26
      * @param id
      * @returns: com.xuecheng.framework.domain.ucenter.XcTeacher
-    */
+     */
     public XcTeacher getTeacherInfo (String id) {
-        XcTeacher xcTeacher = new XcTeacher();
         Optional<XcTeacher> optional = xcTeacherRepository.findById(id);
-        xcTeacher = optional.orElseGet(() -> xcTeacherRepository.findByUserId(id));
-        return xcTeacher;
+        return optional.orElseGet(null);
     }
 
     /**
@@ -386,15 +393,12 @@ public class UserService {
      * @Date: 2020/12/9 17:33
      * @param xcTeacher
      * @returns: com.xuecheng.framework.model.response.ResponseResult
-    */
+     */
     public ResponseResult updateTeacherInfo (XcTeacher xcTeacher) {
         String userId = xcTeacher.getUserId();
-        if (StringUtils.isEmpty(userId)) {
+        String name = xcTeacher.getName();
+        if (StringUtils.isEmpty(userId)||StringUtils.isEmpty(name)) {
             return new ResponseResult(CommonCode.FAIL);
-        }
-        XcTeacher one = xcTeacherRepository.findByUserId(userId);
-        if (one != null) {
-            xcTeacher.setId(one.getId());
         }
         xcTeacherRepository.save(xcTeacher);
         return new ResponseResult(CommonCode.SUCCESS);
@@ -407,7 +411,7 @@ public class UserService {
      * @param phone
      * @param code
      * @returns: com.xuecheng.framework.model.response.ResponseResult
-    */
+     */
     public ResponseResult bindPhone (String phone, String code, String username) {
         boolean flag = checkCode(phone, code);
         if (!flag) {
@@ -461,5 +465,28 @@ public class UserService {
 
     public ResponseResult getCode (String account, String username) {
         return sendFeignClient.getCode(account, username);
+    }
+
+    /**
+     * 获取机构老师列表
+     * @author: olw
+     * @Date: 2021/4/18 16:16
+     * @param page
+     * @param size
+     * @param userListRequest
+     * @returns: com.xuecheng.framework.model.response.QueryResponseResult
+     */
+    public QueryResponseResult<XcTeacher> findTeacherList (int page, int size, UserListRequest userListRequest) {
+        if (userListRequest == null) {
+            userListRequest = new UserListRequest();
+        }
+        page = Math.max(page, 1);
+        size = size <=0 ? 20:size;
+        PageHelper.startPage(page, size);
+        Page<XcTeacher> teacherListPage = xcUserMapper.findTeacherListPage(userListRequest);
+        QueryResult<XcTeacher> queryResult = new QueryResult<>();
+        queryResult.setTotal(teacherListPage.getTotal());
+        queryResult.setList(teacherListPage.getResult());
+        return new QueryResponseResult<>(CommonCode.SUCCESS, queryResult);
     }
 }

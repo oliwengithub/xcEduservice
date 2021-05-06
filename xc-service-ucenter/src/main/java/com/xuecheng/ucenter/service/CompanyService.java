@@ -2,8 +2,10 @@ package com.xuecheng.ucenter.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.xuecheng.framework.domain.Constants;
 import com.xuecheng.framework.domain.ucenter.XcCompany;
 import com.xuecheng.framework.domain.ucenter.XcUser;
+import com.xuecheng.framework.domain.ucenter.ext.UserInfo;
 import com.xuecheng.framework.domain.ucenter.request.RequestCompanyList;
 import com.xuecheng.framework.domain.ucenter.response.CompanyCode;
 import com.xuecheng.framework.domain.ucenter.response.CompanyResult;
@@ -14,8 +16,12 @@ import com.xuecheng.framework.model.response.QueryResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.ucenter.dao.CompanyMapper;
 import com.xuecheng.ucenter.dao.XcCompanyRepository;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.tomcat.util.bcel.Const;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -35,6 +41,9 @@ public class CompanyService {
 
     @Autowired
     XcCompanyRepository xcCompanyRepository;
+
+    @Autowired
+    UserService userService;
 
     /**
      * 查询机构列表
@@ -58,12 +67,26 @@ public class CompanyService {
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public ResponseResult add (XcCompany xcCompany) {
         XcCompany one = xcCompanyRepository.findXcCompaniesByName(xcCompany.getName());
         if (one != null) {
             ExceptionCast.cast(CompanyCode.COMPANY_NAME_EXIST);
         }
         xcCompanyRepository.save(xcCompany);
+        // 添加联系人账号
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUsername(xcCompany.getEmail());
+        userInfo.setPhone(xcCompany.getMobile());
+        userInfo.setEmail(xcCompany.getEmail());
+        userInfo.setName(xcCompany.getLinkname());
+        userInfo.setPassword(RandomStringUtils.randomAlphanumeric(6));
+        userInfo.setRoleIds(Constants.SYSTEM_ROLE_COMPANY);
+        userInfo.setStatus(Constants.USER_STATUS_NORMAL);
+        userInfo.setUtype(Constants.USER_TYPE_TEACHER);
+        // TODO: 2021/4/18 添加机构法人未测试
+        userInfo.setCompanyId(xcCompany.getId());
+        userService.add(userInfo);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 

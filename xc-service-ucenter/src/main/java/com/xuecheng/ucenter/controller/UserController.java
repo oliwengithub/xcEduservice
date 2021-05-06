@@ -8,15 +8,19 @@ import com.xuecheng.framework.domain.ucenter.XcUser;
 import com.xuecheng.framework.domain.ucenter.ext.UserInfo;
 import com.xuecheng.framework.domain.ucenter.ext.XcUserExt;
 import com.xuecheng.framework.domain.ucenter.request.UserListRequest;
+import com.xuecheng.framework.exception.ExceptionCast;
 import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.framework.utils.Oauth2Util;
+import com.xuecheng.framework.utils.XcOauth2Util;
 import com.xuecheng.framework.web.BaseController;
 import com.xuecheng.ucenter.service.UserService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoRestTemplateFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,7 +92,19 @@ public class UserController  extends BaseController implements UcenterController
         return userService.findUserList(page, size, userListRequest);
     }
 
-    @PreAuthorize("hasAuthority('edit_user_info')")
+    @GetMapping("/findteacherlist/{page}/{size}")
+    @Override
+    public QueryResponseResult findTeacherList (@PathVariable("page") int page, @PathVariable("size") int size, UserListRequest userListRequest) {
+        XcOauth2Util.UserJwt userJwtFromHeader = XcOauth2Util.getUserJwtFromHeader(request);
+        String companyId = userJwtFromHeader.getCompanyId();
+        if (StringUtils.isEmpty(companyId)) {
+            ExceptionCast.cast(CommonCode.UNAUTHORISE);
+        }
+        userListRequest.setCompanyId(companyId);
+        return userService.findTeacherList(page, size, userListRequest);
+    }
+
+    @PreAuthorize("hasAuthority('xc_sysmanager_user_edit')")
     @Override
     @PutMapping("/edituser")
     public ResponseResult editInfo (@RequestBody UserInfo userInfo) {
@@ -102,7 +118,8 @@ public class UserController  extends BaseController implements UcenterController
         return userService.add(userInfo);
     }
 
-    @PreAuthorize("hasAuthority('update_user_status')")
+
+    @PreAuthorize("hasAuthority('xc_sysmanager_user_update')")
     @Override
     @PutMapping("/updateuser")
     public ResponseResult updateStatus (@RequestBody XcUser xcUser) {

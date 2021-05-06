@@ -6,6 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface XcTeacherRepository extends JpaRepository<XcTeacher, String> {
 
-    public XcTeacher findByUserId(String userId);
-
 }

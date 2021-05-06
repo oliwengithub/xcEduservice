@@ -36,4 +36,14 @@
 
     </select>
 
+    <select id="findTeacherListPage" parameterType="com.xuecheng.framework.domain.ucenter.request.UserListRequest" resultType="com.xuecheng.framework.domain.ucenter.XcTeacher">
+        SELECT t.user_id userId, t.`name`, t.intro, t.pic, u.status  FROM xc_teacher t
+            LEFT JOIN xc_user u ON u.id = t.user_id
+        WHERE user_id IN
+            (SELECT user_id FROM xc_company_user WHERE company_id = #{companyId} )
+        <if test="name != null and name != '' ">
+            AND u.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+        </if>
+    </select>
+
 </mapper>

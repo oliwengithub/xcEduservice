@@ -17,4 +17,7 @@ public interface SendFeignClient {
 
     @PostMapping("/send/code")
     public ResponseResult getCode (@RequestParam("account") String account, @RequestParam("username")String username);
+
+    @PostMapping("/send/account")
+    public ResponseResult sendAccount (@RequestParam("account") String account, @RequestParam("name")String name, @RequestParam("password")String password);
 }

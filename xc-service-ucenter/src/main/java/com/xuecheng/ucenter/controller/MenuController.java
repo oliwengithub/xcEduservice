@@ -41,7 +41,6 @@ public class MenuController implements MenuControllerApi {
         return menuService.add(xcMenu);
     }
 
-    @PreAuthorize("hasAuthority('get_menu_info')")
     @Override
     @GetMapping("/get/{menuId}")
     public MenuResult getMenuInfo (@PathVariable("menuId") String menuId) {
