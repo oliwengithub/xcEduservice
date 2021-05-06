@@ -2,6 +2,7 @@ package com.xuecheng.framework.domain.ucenter.request;
 
 import com.xuecheng.framework.model.request.RequestData;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
@@ -25,4 +26,9 @@ public class UserListRequest extends RequestData {
 
     /**当前操作用户角色*/
     private String sysRoleId;
+
+    /**当前操作员所属的机构*/
+    private String companyId;
+
+
 }

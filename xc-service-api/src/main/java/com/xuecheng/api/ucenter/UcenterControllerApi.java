@@ -28,6 +28,10 @@ public interface UcenterControllerApi {
     @ApiOperation("获取所有用户列表")
     public QueryResponseResult findUserList (int page, int size, UserListRequest userListRequest);
 
+    @ApiOperation("获取老师列表")
+    public QueryResponseResult findTeacherList (int page, int size, UserListRequest userListRequest);
+
+
     @ApiOperation("修改用户信息")
     public ResponseResult editInfo (UserInfo userInfo);
 

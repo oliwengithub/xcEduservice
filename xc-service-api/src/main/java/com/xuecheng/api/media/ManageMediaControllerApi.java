@@ -19,5 +19,5 @@ public interface ManageMediaControllerApi {
     public ResponseResult uploadchunk(MultipartFile file, Integer chunk, String fileMd5);
 
     @ApiOperation("合并文件")
-    public ResponseResult mergechunks(String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt);
+    public ResponseResult mergechunks(String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt, String tag);
 }

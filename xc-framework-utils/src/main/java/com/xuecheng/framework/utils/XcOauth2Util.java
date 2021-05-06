@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class XcOauth2Util {
 
-    public UserJwt getUserJwtFromHeader(HttpServletRequest request){
+    public static UserJwt getUserJwtFromHeader(HttpServletRequest request){
         Map<String, String> jwtClaims = Oauth2Util.getJwtClaimsFromHeader(request);
         if(jwtClaims == null || StringUtils.isEmpty(jwtClaims.get("id"))){
             return null;
@@ -26,7 +26,7 @@ public class XcOauth2Util {
     }
 
     @Data
-    public class UserJwt{
+    public static class UserJwt{
         private String id;
         private String name;
         private String userpic;

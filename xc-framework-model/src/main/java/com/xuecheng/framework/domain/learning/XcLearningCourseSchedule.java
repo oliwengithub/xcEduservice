@@ -15,19 +15,21 @@ import java.util.Date;
 @ToString
 @Entity
 @Table(name="xc_learning_course_schedule")
-@GenericGenerator(name = "jpa-assigned", strategy = "assigned")
+@GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class XcLearningCourseSchedule implements Serializable {
     private static final long serialVersionUID = -916357210051789799L;
 
     @Id
-    @GeneratedValue(generator = "jpa-assigned")
+    @GeneratedValue(generator = "jpa-uuid")
+    @Column(length = 32)
+    private String id;
     @Column(name = "teachplan_id")
     private String teachplanId;
     @Column(name = "course_id")
     private String courseId;
     @Column(name = "user_id")
     private String userId;
-    @Column(name="updateTime")
+    @Column(name="update_time")
     private Date updateTime;
 
 }

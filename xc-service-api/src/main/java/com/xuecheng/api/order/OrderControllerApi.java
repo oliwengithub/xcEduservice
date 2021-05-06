@@ -15,6 +15,9 @@ public interface OrderControllerApi {
     @ApiOperation("获取用户订单列表")
     public QueryResponseResult findOrderList (int page , int size, OrderRequestList orderRequestList);
 
+    @ApiOperation("获取所有订单列表")
+    public QueryResponseResult findAllOrderList (int page , int size, OrderRequestList orderRequestList);
+
     @ApiOperation("根据订单id获取订单信息")
     public OrderResult getOrderById (String orderId);
 
