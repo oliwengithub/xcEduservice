@@ -164,7 +164,7 @@ public class ManageMediaService {
      * @param fileExt
      * @returns: com.xuecheng.framework.model.response.ResponseResult
      */
-    public ResponseResult mergechunks (String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt) {
+    public ResponseResult mergechunks (String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt, String tag) {
         // 获取块文件的路径
         String chunkfileFolderPath = getChunkFileFolderPath(fileMd5);
         File chunkfileFolder = new File(chunkfileFolderPath);
@@ -201,7 +201,7 @@ public class ManageMediaService {
             ExceptionCast.cast(MediaCode.MERGE_FILE_CHECKFAIL);
         }
         // 将文件信息保存到数据库
-        MediaFile mediaFile = new MediaFile(fileMd5, fileMd5+"."+fileExt, fileName, getFileFolderRelativePath(fileMd5, fileExt), getFileFolderPath(fileMd5), fileExt, mimetype, fileSize, "301002", new Date(), null, null, null);
+        MediaFile mediaFile = new MediaFile(fileMd5, fileMd5+"."+fileExt, fileName, getFileFolderRelativePath(fileMd5, fileExt), getFileFolderPath(fileMd5), fileExt, mimetype, fileSize, "301002", new Date(), null, null, tag);
         MediaFile save = mediaFileRepository.insert(mediaFile);
 
         // 发送消息到mq 进行视频处理

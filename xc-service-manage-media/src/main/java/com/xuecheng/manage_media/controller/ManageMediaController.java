@@ -47,8 +47,8 @@ public class ManageMediaController implements ManageMediaControllerApi {
 
     @Override
     @PostMapping("/mergechunks")
-    public ResponseResult mergechunks (@RequestParam("fileMd5")String fileMd5, @RequestParam("fileName")String fileName, @RequestParam("fileSize")Long fileSize, @RequestParam("mimetype")String mimetype, @RequestParam("fileExt")String fileExt) {
-        return manageMediaService.mergechunks(fileMd5, fileName, fileSize, mimetype, fileExt);
+    public ResponseResult mergechunks (@RequestParam("fileMd5")String fileMd5, @RequestParam("fileName")String fileName, @RequestParam("fileSize")Long fileSize, @RequestParam("mimetype")String mimetype, @RequestParam("fileExt")String fileExt, @RequestParam("tag")String tag) {
+        return manageMediaService.mergechunks(fileMd5, fileName, fileSize, mimetype, fileExt, tag);
     }
 
 }
