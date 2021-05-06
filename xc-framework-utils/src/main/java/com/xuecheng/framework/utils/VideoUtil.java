@@ -82,7 +82,8 @@ public class VideoUtil {
             in = p.getInputStream();
             error = p.getErrorStream();
             boolean finished = false;
-            int maxRetry = 600;//每次休眠1秒，最长执行时间10分种
+            //每次休眠1秒，最长执行时间10分种
+            int maxRetry = 600;
             int retry = 0;
             while (!finished) {
                 if (retry > maxRetry) {
@@ -104,7 +105,7 @@ public class VideoUtil {
                     finished = true;
 
                 } catch (IllegalThreadStateException e) {
-                    Thread.currentThread().sleep(1000);//休眠1秒
+                    Thread.sleep(1000);
                     retry++;
                 }
             }
