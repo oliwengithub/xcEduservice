@@ -216,8 +216,8 @@ public class UserService {
             xcTeacherRepository.save(xcTeacher);
 
         }
-        // TODO: 2021/4/8 发送密码账号邮件
-        sendFeignClient.sendAccount(user.getUsername(), user.getName(), password);
+        // 发送账号密码
+        sendFeignClient.sendAccount(user.getEmail(), user.getName(), password);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 

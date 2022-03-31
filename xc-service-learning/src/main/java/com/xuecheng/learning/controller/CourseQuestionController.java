@@ -37,7 +37,7 @@ public class CourseQuestionController extends BaseController implements Learning
     @Override
     @PostMapping("/apply")
     public ResponseResult applyQuestion (@RequestBody XcLearningCourseQuestion xcLearningCourseQuestion) {
-        XcOauth2Util.UserJwt userJwt = new XcOauth2Util().getUserJwtFromHeader(request);
+        XcOauth2Util.UserJwt userJwt = XcOauth2Util.getUserJwtFromHeader(request);
         if (userJwt == null) {
             ExceptionCast.cast(CommonCode.UNAUTHENTICATED);
         }

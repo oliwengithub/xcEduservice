@@ -38,3 +38,24 @@ xuecheng:
     network_timeout_in_seconds: 30
     charset: UTF-8
     tracker_servers: 192.168.2.130:22122 #多个 trackerServer中间以逗号分隔
+
+alioss:
+#  endpoint: oss-cn-hangzhou.aliyuncs.com
+#  accessKeyId: LTAI5tBYinSKytPdinhfDJef
+#  accessKeySecret: GH8M0Sub7uYMpXcf16SFhQCemWgzJk
+#  roleArn: acs:ram::1070690329323020:role/oliwen
+#  region: cn-hangzhou
+#  bucket: oliwen
+
+  endpoint: oss-cn-hangzhou.aliyuncs.com
+  accessKeyId: LTAI5t83WniE2w6WJbPyCkyi
+  accessKeySecret: uCdTWTmaklzFZ0PVFSfrlMvOHNC5ct
+  roleArn: acs:ram::1359954975027572:role/mack-oss
+  region: cn-hangzhou
+  bucket: edu-2020-10-16
+
+#用户登录名称 oliwen@1070690329323020.onaliyun.com
+#AccessKey ID LTAI5tBYinSKytPdinhfDJef
+#AccessKey Secret GH8M0Sub7uYMpXcf16SFhQCemWgzJk
+#acs:ram::1070690329323020:role/oliwen
+

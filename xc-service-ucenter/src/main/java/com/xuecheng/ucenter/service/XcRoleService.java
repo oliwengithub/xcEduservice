@@ -15,6 +15,8 @@ import com.xuecheng.ucenter.dao.XcRoleRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,9 +49,21 @@ public class XcRoleService {
      * @param
      * @returns: com.xuecheng.framework.model.response.QueryResponseResult
     */
-    public QueryResponseResult findAll () {
+    public QueryResponseResult findAll (XcRole xcRole) {
+        if( xcRole== null) {
+            xcRole = new XcRole();
+        }
         // 角色数量不多直接查出所有，不做分页处理
-        List<XcRole> all = xcRoleRepository.findAll();
+        // 构建查询条件
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching();
+        if (StringUtils.isNotEmpty(xcRole.getRoleName())) {
+            exampleMatcher.withMatcher("roleName", ExampleMatcher.GenericPropertyMatchers.contains());
+        }
+        if (StringUtils.isNotEmpty(xcRole.getStatus())) {
+            exampleMatcher.withMatcher("status", ExampleMatcher.GenericPropertyMatchers.exact());
+        }
+        Example<XcRole> example = Example.of(xcRole, exampleMatcher);
+        List<XcRole> all = xcRoleRepository.findAll(example);
         QueryResult<XcRole> queryResult = new  QueryResult();
         queryResult.setList(all);
         return new QueryResponseResult(CommonCode.SUCCESS,queryResult);

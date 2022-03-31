@@ -48,6 +48,9 @@
             <if test="parentMenuName != null and parentMenuName != ''">
                 AND mu.p_id IN (select id from xc_menu where menu_name LIKE CONCAT(CONCAT('%', #{parentMenuName}),'%'))
             </if>
+            <if test="isMenu != null and isMenu != ''">
+                AND mu.is_menu = #{isMenu}
+            </if>
             AND mu.status = '1'
         </where>
 
@@ -72,6 +75,7 @@
         LEFT JOIN xc_menu c ON c.p_id = b.id AND c.status = '1'
         LEFT JOIN xc_menu d ON d.p_id = c.id AND d.status = '1'
         WHERE a.p_id = '0'
+        and a.status = '1'
         <if test="id!=null and id!='' ">
             AND a.id = #{id}
         </if>

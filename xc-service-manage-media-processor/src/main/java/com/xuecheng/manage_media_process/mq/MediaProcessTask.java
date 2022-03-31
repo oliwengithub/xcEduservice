@@ -79,7 +79,7 @@ public class MediaProcessTask {
         String mp4folder_path = serverPath + mediaFile.getFilePath();
         Mp4VideoUtil videoUtil = new Mp4VideoUtil(ffmpeg_path,video_path,mp4_name,mp4folder_path);
         String result = videoUtil.generateMp4();
-        if(result == null || !"success".equals(result)){
+        if(!"success".equals(result)){
             // 操作失败写入处理日志
 
             //处理状态为处理失败

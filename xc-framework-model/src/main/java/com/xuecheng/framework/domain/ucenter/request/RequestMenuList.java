@@ -20,9 +20,15 @@ public class RequestMenuList extends RequestData {
     */
     private String menuName;
 
-
     /**
      * 父级菜单名称
      */
     private String parentMenuName;
+
+    /**
+     * 是否菜单
+     */
+    private String isMenu;
+
+
 }

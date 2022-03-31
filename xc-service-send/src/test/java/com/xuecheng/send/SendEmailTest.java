@@ -35,17 +35,18 @@ public class SendEmailTest {
     @Test
     public void sendEmail() {
         String s = RandomStringUtils.randomNumeric(15);
-        mailService.sendSimpleMail("178263682@qq.com", "测试", "1111");
+        mailService.sendSimpleMail("1768085488@qq.com", "测试", "1111");
     }
 
     @Test
     public void sendTemplate() throws TemplateException, IOException, MessagingException {
         String s = RandomStringUtils.randomNumeric(15);
         Map<String, Object> model = new HashMap<String, Object>(){{
-            put("code", s);
-            put("username", "oliwen");
+            put("password", s);
+            put("name", "oliwen");
+            put("account", "oliwen");
         }};
-        mailService.sendTemplateMail("178263682@qq.com", "测试", "hello.html", model);
+        mailService.sendTemplateMail("1768085488@qq.com", "测试", "hello.html", model);
     }
 
     @Test

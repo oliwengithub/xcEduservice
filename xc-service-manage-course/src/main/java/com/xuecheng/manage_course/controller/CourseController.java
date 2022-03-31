@@ -98,6 +98,12 @@ public class CourseController extends BaseController implements CourseController
     @Override
     @PostMapping("/coursebase/add")
     public AddCourseResult addCourseBase(@RequestBody CourseBase courseBase) {
+        XcOauth2Util.UserJwt jwt = XcOauth2Util.getUserJwtFromHeader(request);
+        // 对应机构教师添加课程进行机构和用户id的绑定
+        if (jwt != null) {
+            courseBase.setCompanyId(jwt.getCompanyId());
+            courseBase.setUserId(jwt.getId());
+        }
         return courseService.addCourseBase(courseBase);
     }
 

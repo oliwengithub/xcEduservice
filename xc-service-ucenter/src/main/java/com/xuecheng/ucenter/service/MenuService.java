@@ -2,6 +2,7 @@ package com.xuecheng.ucenter.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.xuecheng.framework.domain.Constants;
 import com.xuecheng.framework.domain.ucenter.XcMenu;
 import com.xuecheng.framework.domain.ucenter.ext.XcMenuNode;
 import com.xuecheng.framework.domain.ucenter.request.RequestMenuList;
@@ -45,7 +46,7 @@ public class MenuService {
         }
         xcMenu.setUpdateTime(new Date());
         xcMenu.setCreateTime(new Date());
-        xcMenu.setStatus("1");
+        xcMenu.setStatus(Constants.SYSTEM_STATUS_NORMAL);
         xcMenuRepository.save(xcMenu);
         return new ResponseResult(CommonCode.SUCCESS);
     }
@@ -56,7 +57,7 @@ public class MenuService {
         if (optional.isPresent()) {
             XcMenu xcMenu = optional.get();
             // 0无效，1有效
-            xcMenu.setStatus("0");
+            xcMenu.setStatus(Constants.SYSTEM_STATUS_CANCEL);
             return this.update(xcMenu);
         }
         return new ResponseResult(CommonCode.FAIL);

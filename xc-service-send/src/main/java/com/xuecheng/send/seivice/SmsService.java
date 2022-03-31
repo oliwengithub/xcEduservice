@@ -42,7 +42,6 @@ public class SmsService {
         request.putQueryParameter("SignName", "乐购");
         request.putQueryParameter("PhoneNumbers", phoneNum);
         request.putQueryParameter("TemplateCode", "SMS_205405521");
-
         Map<String, Object> params = new HashMap<>();
         params.put("code", code);
 

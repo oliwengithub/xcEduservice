@@ -73,19 +73,19 @@ public class CompanyService {
         if (one != null) {
             ExceptionCast.cast(CompanyCode.COMPANY_NAME_EXIST);
         }
-        xcCompanyRepository.save(xcCompany);
+        XcCompany save = xcCompanyRepository.save(xcCompany);
         // 添加联系人账号
         UserInfo userInfo = new UserInfo();
-        userInfo.setUsername(xcCompany.getEmail());
-        userInfo.setPhone(xcCompany.getMobile());
-        userInfo.setEmail(xcCompany.getEmail());
-        userInfo.setName(xcCompany.getLinkname());
+        userInfo.setUsername(save.getEmail());
+        userInfo.setPhone(save.getMobile());
+        userInfo.setEmail(save.getEmail());
+        userInfo.setName(save.getLinkname());
         userInfo.setPassword(RandomStringUtils.randomAlphanumeric(6));
         userInfo.setRoleIds(Constants.SYSTEM_ROLE_COMPANY);
         userInfo.setStatus(Constants.USER_STATUS_NORMAL);
         userInfo.setUtype(Constants.USER_TYPE_TEACHER);
-        // TODO: 2021/4/18 添加机构法人未测试
-        userInfo.setCompanyId(xcCompany.getId());
+        // spring data jpa 保存返回对象才回写id
+        userInfo.setCompanyId(save.getId());
         userService.add(userInfo);
         return new ResponseResult(CommonCode.SUCCESS);
     }

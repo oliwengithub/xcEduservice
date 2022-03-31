@@ -59,15 +59,12 @@ public class AuthController implements AuthControllerApi, UserRegisterController
         String username = loginRequest.getUsername();
         // 密码
         String password = loginRequest.getPassword();
-
         // 申请令牌
         AuthToken authToken =  authService.login(username,password,clientId,clientSecret);
-
         // 用户身份令牌
         String access_token = authToken.getAccess_token();
         // 将令牌存储到cookie
         this.saveCookie(access_token);
-
         return new LoginResult(CommonCode.SUCCESS,access_token);
     }
 

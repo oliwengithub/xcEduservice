@@ -4,7 +4,6 @@ import com.xuecheng.api.send.SendControllerApi;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.send.seivice.SendAccountService;
 import com.xuecheng.send.seivice.VerificationCodeService;
-import org.apache.tomcat.util.net.SendfileState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

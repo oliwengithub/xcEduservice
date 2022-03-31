@@ -28,8 +28,7 @@ public class OrderPayController extends BaseController implements OrderPayContro
     @Override
     @PostMapping("/pay/createWeixinQrcode")
     public PayQrcodeResult createWeixinQrcode (String orderNumber) {
-        XcOauth2Util oauth2Util = new XcOauth2Util();
-        XcOauth2Util.UserJwt jwt = oauth2Util.getUserJwtFromHeader(request);
+        XcOauth2Util.UserJwt jwt = XcOauth2Util.getUserJwtFromHeader(request);
         String userId = "";
         if (jwt != null) {
             userId = jwt.getId();
@@ -42,8 +41,7 @@ public class OrderPayController extends BaseController implements OrderPayContro
     @Override
     @GetMapping("/pay/queryWeixinPayStatus")
     public PayOrderResult queryWeixinPayStatus (String orderNumber)  {
-        XcOauth2Util oauth2Util = new XcOauth2Util();
-        XcOauth2Util.UserJwt jwt = oauth2Util.getUserJwtFromHeader(request);
+        XcOauth2Util.UserJwt jwt = XcOauth2Util.getUserJwtFromHeader(request);
         String userId = "";
         if (jwt != null) {
             userId = jwt.getId();

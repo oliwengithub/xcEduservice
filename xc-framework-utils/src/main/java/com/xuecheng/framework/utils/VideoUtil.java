@@ -9,6 +9,7 @@ import java.util.List;
  * 1、查看视频时长
  * 2、校验两个视频的时长是否相等
  *
+ * @author olw
  */
 public class VideoUtil {
 

@@ -1,9 +1,11 @@
 package com.xuecheng.ucenter;
 
+import com.xuecheng.framework.domain.ucenter.XcCompany;
 import com.xuecheng.framework.domain.ucenter.XcPermission;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.framework.utils.BCryptUtil;
 import com.xuecheng.ucenter.dao.XcPermissionRepository;
+import com.xuecheng.ucenter.service.CompanyService;
 import com.xuecheng.ucenter.service.XcRoleService;
 import net.bytebuddy.asm.Advice;
 import org.bouncycastle.crypto.generators.BCrypt;
@@ -26,6 +28,9 @@ public class TestService {
 
     @Autowired
     XcPermissionRepository xcPermissionRepository;
+
+    @Autowired
+    CompanyService companyService;
 
     @Test
     public void testRoleService () {
@@ -53,6 +58,18 @@ public class TestService {
         List<XcPermission> xcPermissions = xcPermissionRepository.saveAll(permissionsAdd);
         System.out.println(xcPermissions);
 
+    }
+
+    @Test
+    public void testAddCompany() {
+        XcCompany company = new XcCompany();
+        company.setEmail("178263682@qq.com");
+        company.setLinkname("test001");
+        company.setMobile("18897956300");
+        company.setName("test001");
+        company.setStatus("111");
+
+        companyService.add(company);
     }
 
     @Test

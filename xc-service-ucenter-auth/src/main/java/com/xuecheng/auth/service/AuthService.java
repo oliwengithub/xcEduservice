@@ -238,14 +238,13 @@ public class AuthService {
         return true;
     }
 
-
     /**
      * 用户注册
-     * @author: olw
-     * @Date: 2020/10/28 17:38
-     * @param xcUser
-     * @returns: com.xuecheng.framework.model.response.ResponseResult
-     */
+     * @param xcUser 用户信息
+     * @author olw
+     * @date 2020/10/28 17:38
+     * @return com.xuecheng.framework.model.response.ResponseResult
+    */
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult register (XcUser xcUser) {
         // 根据用户名查询用户是否已经存在
@@ -253,7 +252,6 @@ public class AuthService {
         if (!responseResult.isSuccess()) {
             return responseResult;
         }
-
         XcUser user = new XcUser();
         //添加用户
         BeanUtils.copyProperties(xcUser, user);
@@ -268,10 +266,11 @@ public class AuthService {
         xcUserRole.setCreateTime(new Date());
         xcUserRole.setUserId(user.getId());
         // 角色类型
-        if (save.getUtype().equals("101001")){
+        if ("101001".equals(save.getUtype())){
             xcUserRole.setCreator("学生");
             xcUserRole.setRoleId(Constants.SYSTEM_ROLE_STUDENT);
-        }else if(save.getUtype().equals("101002")) {
+        }
+        if("101002".equals(save.getUtype())) {
             xcUserRole.setCreator("老师");
             xcUserRole.setRoleId(Constants.SYSTEM_ROLE_TEACHER);
         }

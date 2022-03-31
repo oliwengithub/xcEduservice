@@ -29,9 +29,10 @@ public class SendAccountService {
             put("password",password);
         }};
         try {
-            mailService.sendTemplateMail(account, "在线教育网", "hello.html", map);
+            mailService.sendTemplateMail(account, "IT职业教育网", "hello.html", map);
 
         }catch (Exception e) {
+            e.printStackTrace();
             return new ResponseResult(CommonCode.FAIL);
         }
 

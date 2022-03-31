@@ -11,6 +11,7 @@ import com.xuecheng.framework.utils.XcOauth2Util;
 import com.xuecheng.framework.web.BaseController;
 import com.xuecheng.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -34,15 +35,14 @@ public class OrderController extends BaseController implements OrderControllerAp
     @Override
     @PostMapping("/list/{page}/{size}")
     public QueryResponseResult findOrderList (@PathVariable("page") int page, @PathVariable("size") int size, OrderRequestList orderRequestList) {
-        XcOauth2Util oauth2Util = new XcOauth2Util();
-        XcOauth2Util.UserJwt jwt = oauth2Util.getUserJwtFromHeader(request);
+        XcOauth2Util.UserJwt jwt = XcOauth2Util.getUserJwtFromHeader(request);
         if (jwt != null) {
             orderRequestList.setUserId(jwt.getId());
         }
         return orderService.findOrderList(page, size, orderRequestList);
     }
 
-    //@PreAuthorize("hasAuthority('xc_ordermanager_list')")\
+    @PreAuthorize("hasAuthority('xc_sysmanager_order_list')")
     @GetMapping("/all/{page}/{size}")
     @Override
     public QueryResponseResult findAllOrderList (@PathVariable("page") int page, @PathVariable("size") int size, OrderRequestList orderRequestList) {
@@ -59,8 +59,7 @@ public class OrderController extends BaseController implements OrderControllerAp
     @Override
     @PostMapping("/create")
     public CreateOrderResult createOrders (@RequestBody CreateOrderRequest createOrderRequest) {
-        XcOauth2Util oauth2Util = new XcOauth2Util();
-        XcOauth2Util.UserJwt jwt = oauth2Util.getUserJwtFromHeader(request);
+        XcOauth2Util.UserJwt jwt = XcOauth2Util.getUserJwtFromHeader(request);
         if (jwt == null || createOrderRequest == null) {
             return new CreateOrderResult(OrderCode.ORDER_ADD_ORDERNUMERROR, null);
         }

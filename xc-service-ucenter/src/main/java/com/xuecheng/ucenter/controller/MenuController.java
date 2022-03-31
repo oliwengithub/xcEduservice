@@ -56,7 +56,7 @@ public class MenuController implements MenuControllerApi {
 
     @PreAuthorize("hasAuthority('xc_sysmanager_menu_delete')")
     @Override
-    @PostMapping("/del/{menuId}")
+    @DeleteMapping("/del/{menuId}")
     public ResponseResult del (@PathVariable("menuId") String menuId) {
         return menuService.del(menuId);
     }

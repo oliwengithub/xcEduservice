@@ -4,7 +4,7 @@ import com.xuecheng.framework.model.response.ResultCode;
 
 public enum LearningCode implements ResultCode {
     LEARNING_GETMEDIA_ERROR(false,26001,"获取视频播放地址出错！"),
-    CHOOSECOURSE_USERISNULL(false,26002,"选课用户不未登录！"),
+    CHOOSECOURSE_USERISNULL(false,26002,"选课用户未登录！"),
     CHOOSECOUSER_NOHAVE(false,26003,"用戶沒有选课！"),
     CHOOSECO_ISEXPIRE(false,26004,"选课已结束或不存在！"),
     CHOOSECO_NOOPEN(false,26004,"该课程为收费课程！"),

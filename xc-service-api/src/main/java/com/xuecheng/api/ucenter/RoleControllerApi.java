@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface RoleControllerApi {
 
     @ApiOperation("获取所有角色列表")
-    public QueryResponseResult  findAllRole ();
+    public QueryResponseResult  findAllRole (XcRole xcRole);
 
 
     @ApiOperation("添加角色")

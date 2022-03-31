@@ -28,8 +28,8 @@ public class RoleController implements RoleControllerApi {
     @PreAuthorize("hasAuthority('xc_sysmanager_role')")
     @Override
     @GetMapping("/all")
-    public QueryResponseResult findAllRole () {
-        return roleService.findAll();
+    public QueryResponseResult findAllRole (XcRole xcRole) {
+        return roleService.findAll(xcRole);
     }
 
     @PreAuthorize("hasAuthority('xc_sysmanager_role_add')")

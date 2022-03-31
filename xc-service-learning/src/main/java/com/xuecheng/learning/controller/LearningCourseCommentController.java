@@ -38,8 +38,7 @@ public class LearningCourseCommentController extends BaseController implements L
     @Override
     @PostMapping("/add")
     public ResponseResult addCourseComment (@RequestBody XcLearningCourseComment xcLearningCourseComment) {
-        XcOauth2Util xcOauth2Util = new XcOauth2Util();
-        XcOauth2Util.UserJwt userJwt = xcOauth2Util.getUserJwtFromHeader(request);
+        XcOauth2Util.UserJwt userJwt = XcOauth2Util.getUserJwtFromHeader(request);
         if (userJwt == null) {
             ExceptionCast.cast(CommonCode.UNAUTHENTICATED);
         }

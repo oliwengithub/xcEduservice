@@ -41,8 +41,7 @@ public class ChooseCourseController extends BaseController implements ChooseCour
     @Override
     @PostMapping("/choosecourse/addopencourse/{courseId}")
     public ResponseResult addOpenCourse (@PathVariable("courseId") String courseId) {
-        XcOauth2Util xcOauth2Util = new XcOauth2Util();
-        XcOauth2Util.UserJwt userJwt = xcOauth2Util.getUserJwtFromHeader(request);
+        XcOauth2Util.UserJwt userJwt = XcOauth2Util.getUserJwtFromHeader(request);
         if (userJwt == null) {
            return new ResponseResult(LearningCode.CHOOSECOURSE_USERISNULL);
         }

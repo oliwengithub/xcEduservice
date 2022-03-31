@@ -17,15 +17,14 @@
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
-
         <dependency>
             <groupId>com.xuecheng</groupId>
-            <artifactId>xc-framework-model</artifactId>
+            <artifactId>xc-service-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.xuecheng</groupId>
-            <artifactId>xc-framework-common</artifactId>
+            <artifactId>xc-framework-model</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -35,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>com.xuecheng</groupId>
-            <artifactId>xc-service-api</artifactId>
+            <artifactId>xc-framework-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -82,16 +81,17 @@
 
     </dependencies>
 
-
-
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-
 </project>

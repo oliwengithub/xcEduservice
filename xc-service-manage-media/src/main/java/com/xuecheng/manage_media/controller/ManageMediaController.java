@@ -1,13 +1,14 @@
 package com.xuecheng.manage_media.controller;
 
-import com.netflix.discovery.converters.Auto;
 import com.xuecheng.api.media.ManageMediaControllerApi;
 import com.xuecheng.framework.domain.media.response.CheckChunkResult;
 import com.xuecheng.framework.model.response.ResponseResult;
-import com.xuecheng.manage_media.dao.MediaFileRepository;
 import com.xuecheng.manage_media.service.ManageMediaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**

@@ -83,7 +83,7 @@ public class PayService {
             ExceptionCast.cast(OrderCode.Pay_USERERROR);
         }
         String details = order.getDetails();
-        Map map = new HashMap(1);
+        Map map = new HashMap(2);
         List<Map> mapList = JSONArray.parseArray(details, Map.class);
         if (mapList != null && mapList.size() > 0){
             map = mapList.get(0);
@@ -206,7 +206,7 @@ public class PayService {
      * @param price
      * @returns: java.util.Map<java.lang.String,java.lang.String>
     */
-    private Map<String, String> createPayQrcode(CoursePub coursePub, int price, String orderNumber, String ip) {
+    public Map<String, String> createPayQrcode(CoursePub coursePub, int price, String orderNumber, String ip) {
         Map<String, String> map = new HashMap<>();
 
         try {

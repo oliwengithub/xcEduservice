@@ -53,7 +53,7 @@ public class VerificationCodeService {
         if (b) {
             // 发送邮箱验证码
             if (CheckUtils.isEmail(account)) {
-                Map<String, Object> model = new HashMap<>(3);
+                Map<String, Object> model = new HashMap<>(4,1);
                 model.put("username", username);
                 model.put("code", code);
                 try {

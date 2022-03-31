@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -30,7 +31,9 @@ import java.security.KeyPair;
 class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
-    //jwt令牌转换器
+    /**
+     * jwt令牌转换器
+    */
     @Autowired
     private JwtAccessTokenConverter jwtAccessTokenConverter;
     @Autowired
@@ -39,10 +42,15 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
     AuthenticationManager authenticationManager;
     @Autowired
     TokenStore tokenStore;
-    @Autowired
+    @Resource
     private CustomUserAuthenticationConverter customUserAuthenticationConverter;
 
-    //读取密钥的配置
+    /**
+     * 读取密钥的配置
+     * @author: olw
+     * @Date: 2021/9/3 20:16
+     * @returns: org.springframework.cloud.bootstrap.encrypt.KeyProperties
+    */
     @Bean("keyProp")
     public KeyProperties keyProperties(){
         return new KeyProperties();
@@ -52,7 +60,12 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
     private KeyProperties keyProperties;
 
 
-    //客户端配置
+    /**
+     * 客户端配置
+     * @author: olw
+     * @Date: 2021/9/3 20:16
+     * @returns: org.springframework.security.oauth2.provider.ClientDetailsService
+    */
     @Bean
     public ClientDetailsService clientDetails() {
         return new JdbcClientDetailsService(dataSource);
@@ -71,64 +84,58 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
                 .scopes("app");//客户端范围，名称自定义，必填*/
     }
 
-    //token的存储方法
-//    @Bean
-//    public InMemoryTokenStore tokenStore() {
-//        //将令牌存储到内存
-//        return new InMemoryTokenStore();
-//    }
-//    @Bean
-//    public TokenStore tokenStore(RedisConnectionFactory redisConnectionFactory){
-//        RedisTokenStore redisTokenStore = new RedisTokenStore(redisConnectionFactory);
-//        return redisTokenStore;
-//    }
     @Bean
-    @Autowired
-    public TokenStore tokenStore(JwtAccessTokenConverter jwtAccessTokenConverter) {
+    public TokenStore tokenStore() {
         return new JwtTokenStore(jwtAccessTokenConverter);
     }
+
+    /**
+     * token 构造器
+     * @author: olw
+     * @Date: 2021/10/11 11:25
+     * @returns: org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
+    */
     @Bean
-    public JwtAccessTokenConverter jwtAccessTokenConverter(CustomUserAuthenticationConverter customUserAuthenticationConverter) {
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         KeyPair keyPair = new KeyStoreKeyFactory
                 (keyProperties.getKeyStore().getLocation(), keyProperties.getKeyStore().getSecret().toCharArray())
                 .getKeyPair(keyProperties.getKeyStore().getAlias(),keyProperties.getKeyStore().getPassword().toCharArray());
         converter.setKeyPair(keyPair);
-        //配置自定义的CustomUserAuthenticationConverter
+        // 配置自定义的CustomUserAuthenticationConverter
         DefaultAccessTokenConverter accessTokenConverter = (DefaultAccessTokenConverter) converter.getAccessTokenConverter();
+        // 配置token构造器
         accessTokenConverter.setUserTokenConverter(customUserAuthenticationConverter);
         return converter;
     }
-    //授权服务器端点配置
+    /**
+     * 授权服务器端点配置
+     * @author: olw
+     * @Date: 2021/9/3 20:14
+     * @param endpoints
+     * @returns: void
+    */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        /*Collection<TokenEnhancer> tokenEnhancers = applicationContext.getBeansOfType(TokenEnhancer.class).values();
-        TokenEnhancerChain tokenEnhancerChain=new TokenEnhancerChain();
-        tokenEnhancerChain.setTokenEnhancers(new ArrayList<>(tokenEnhancers));
-
-        DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setReuseRefreshToken(true);
-        defaultTokenServices.setSupportRefreshToken(true);
-        defaultTokenServices.setTokenStore(tokenStore);
-        defaultTokenServices.setAccessTokenValiditySeconds(1111111);
-        defaultTokenServices.setRefreshTokenValiditySeconds(1111111);
-        defaultTokenServices.setTokenEnhancer(tokenEnhancerChain);
-
-        endpoints
-                .authenticationManager(authenticationManager)
-                .userDetailsService(userDetailsService)
-                        //.tokenStore(tokenStore);
-                .tokenServices(defaultTokenServices);*/
         endpoints.accessTokenConverter(jwtAccessTokenConverter)
-                .authenticationManager(authenticationManager)//认证管理器
-                .tokenStore(tokenStore)//令牌存储
-                .userDetailsService(userDetailsService);//用户信息service
+                //认证管理器
+                .authenticationManager(authenticationManager)
+                //令牌存储
+                .tokenStore(tokenStore)
+                //用户信息service
+                .userDetailsService(userDetailsService);
     }
 
-    //授权服务器的安全配置
+    /**
+     * 授权服务器的安全配置
+     * @author: olw
+     * @Date: 2021/9/3 20:13
+     * @param oauthServer
+     * @returns: void
+    */
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-//        oauthServer.checkTokenAccess("isAuthenticated()");//校验token需要认证通过，可采用http basic认证
+        //校验token需要认证通过，可采用http basic认证
         oauthServer.allowFormAuthenticationForClients()
                 .passwordEncoder(new BCryptPasswordEncoder())
                 .tokenKeyAccess("permitAll()")
